@@ -28,8 +28,8 @@ function getTweet(handle, callback){
   })
 }
 
-function getUser(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, user, reponse) {
+function getUser(handle, callback){
+  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user, reponse) {
     let valid = false;
     if (error) {
       let userinfo = {valid};
