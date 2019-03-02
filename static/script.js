@@ -5,8 +5,9 @@
 //                              WebSocket Client
 //----------------------------------------------------------------------------
 
-let wsUrl = "wss://" + location.hostname + ":" + location.port + "/twitcher/";
-let ws = new WebSocket(wsUrl);
+
+const url = 'ws://' + location.hostname+ ":"+location.port+ '/twitcher/';
+const connection = new WebSocket(url);
 
 ws.onopen = function() {
   //do something
@@ -36,7 +37,6 @@ function onloadfunction() {
 
     connection.onmessage = (message) => {
 
-
         console.log(message);
 
         let messagestr = message.data.toString();
@@ -61,7 +61,17 @@ function onloadfunction() {
 
 }
 
+function checkUsername() {
+    let handle = document.getElementById("TwitterAccount").value;
 
+    let message = {
+
+        request: "checkhandle",
+        handle: handle,
+    };
+    console.log(message)
+    connection.send(JSON.stringify(message));
+}
 
 
 function handleMessage(message) {
