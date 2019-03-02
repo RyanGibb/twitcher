@@ -24,7 +24,7 @@ Modes:
 }
 
 {
-  request: checkhandle,
+  request: userinfo,
   handle: ...
 }
 
@@ -41,7 +41,11 @@ Modes:
 
 
 {
-  response: checkhandle,
-  valid: true/false
+  response: userinfo,
+  user: {
+    valid: true/false,
+    followers: ...,
+    tweets: ...
+   }
 }
 
