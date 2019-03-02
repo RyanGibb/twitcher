@@ -83,7 +83,6 @@ wsServer.on('connection', function(ws, req) {
 
     if (receivedMessage.request == 'guess') {
       let handles = receivedMessage.handles;
-      console.log(handles)
       if(!handles) {
         respondError(ws, req, 'missing handles for "guess" request');
       }
@@ -102,7 +101,7 @@ wsServer.on('connection', function(ws, req) {
         }
       })
     }
-    
+
     else {
       respondError(ws, req, 'unsupported request "' + receivedMessage.request + '"');
     }
