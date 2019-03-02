@@ -47,6 +47,7 @@ var handles = [];
 var dictTweetCount = [];
 var dictFollowerCount = [];
 function addHandle(handle, tweetCount, followerCount) {
+    if(tweetCount > 0){
     var index = handles.indexOf(handle);
     console.log(index)
     if(index < 0) {
@@ -58,6 +59,8 @@ function addHandle(handle, tweetCount, followerCount) {
 
     }else {
         window.alert("User already exist");
+    }}else{
+        window.alert("The user has no tweets");
     }
 }
 
@@ -101,12 +104,15 @@ function refreshTable(){
     table.replaceChild(new_tbody, old_tbody[0])
 }
 
-var answer
+let answer = ""
 function handleMessage(obj) {
     if (obj.response === "guess") {
         let tweetText= document.getElementById("TweetText")
         tweetText.innerText = obj.tweet.body
+        console.log("quess start")
+        console.log(obj.tweet.handle)
         answer = obj.tweet.handle
+        console.log(answer)
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
         handles.forEach(function (element) {
@@ -114,6 +120,7 @@ function handleMessage(obj) {
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
             document.body.appendChild(btn);
+            btn.classList.toggle("button2");
             btn.onclick = function(){
                 answerQuestion(element)
             };
@@ -151,6 +158,8 @@ function play() {
 function answerQuestion(guess) {
     if(answer === guess ){
         alert("ggwp")
+    }else{
+        alert("try again")
     }
 }
 function guess(){

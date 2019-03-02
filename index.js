@@ -12,13 +12,8 @@ var client = new Twitter({
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
 
-<<<<<<< HEAD
 function getTweet(handle, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
-=======
-function getTweet(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + screen_name, function(error, tweets, response) {
->>>>>>> d103c6649630cf79622d1b26499f552f90c1c4e4
     if (error) {
       return callback(error);
     }
