@@ -122,7 +122,7 @@ function handleMessage(obj) {
             document.body.appendChild(btn);
             btn.classList.toggle("button2");
             btn.onclick = function(){
-                answerQuestion(element)
+                answerQuestion(element,btn)
             };
             buttons.appendChild(btn)
         })
@@ -155,13 +155,6 @@ function play() {
         window.alert("You need to add at least 2 twitter accounts");
     }
 }
-function answerQuestion(guess) {
-    if(answer === guess ){
-        alert("ggwp")
-    }else{
-        alert("try again")
-    }
-}
 function guess(){
     let request = "guess"
     let message = {request, handles};
@@ -172,3 +165,17 @@ function getQuestion(){
 
 
 }
+function answerQuestion(userAnswer,btn) {
+    if(answer === userAnswer ){
+
+        btn.classList.toggle("button");
+        alert("correct")
+        guess()
+    }else{
+        alert("try again")
+        btn.classList.toggle("deleteButton");
+        btn.onclick = function(){
+        };
+    }
+}
+
