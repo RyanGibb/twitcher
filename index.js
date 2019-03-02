@@ -16,8 +16,8 @@ const express = require('express');
 const http = require('http');
 
 //let port = process.getuid(); // type "id" on Linux for uid value
-// if (port < 1024) port += 10000; // do not use privileged ports
-let port = process.env.PORT || 8080;
+//if (port < 1024) port += 10000; // do not use privileged ports
+let port = 21200;
 
 const app = express();
 const static_dir = 'static';
@@ -62,8 +62,8 @@ wsServer.on('connection', function(ws, req) {
     }
 
     if (receivedMessage.request == 'guess') {
-      let parameters = receivedMessage.handles;
-      if(!parameters) {
+      let handles = receivedMessage.handles;
+      if(!handles) {
         respondError(ws, req, 'missing handles for "guess" request');
       }
       // select random tweet

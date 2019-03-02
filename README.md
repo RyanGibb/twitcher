@@ -21,10 +21,10 @@ Modes:
   ]
 }
    
-### Responce
+### Response
 
 {
-  responce: guess,
+  response: guess,
   tweet: {
     handle: ...,
     timestamp: ..,
