@@ -6,8 +6,8 @@
 //----------------------------------------------------------------------------
 
 
-const url = 'ws://' + location.hostname+ ":"+location.port+ '/twitcher/';
-const connection = new WebSocket(url);
+const wsUrl = 'wss://' + location.hostname+ ":"+location.port+ '/twitcher/';
+const ws = new WebSocket(wsUrl);
 
 ws.onopen = function() {
   //do something
@@ -33,47 +33,22 @@ function sendMessage(messageString) {
   ws.send(messageString);
 }
 
-function onloadfunction() {
-
-    connection.onmessage = (message) => {
-
-        console.log(message);
-
-        let messagestr = message.data.toString();
-        try {
-            let obj = JSON.parse(messagestr);
-            /**----------------------------------------------**/
-            if (obj.response === "quess") {
-                //cleantable();
-                //createTable(obj)
-            }
-            /**----------------------------------------------**/
-            else if (obj.response === "check") {
-                // console.log(obj.info.filecontent);
-                //saveByteArray([binaryStringToArrayBuffer(obj.info.filecontent)], filetoDownload);
-            }
-
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
-
-}
-
 function checkUsername() {
-    let handle = document.getElementById("TwitterAccount").value;
-
-    let message = {
-
-        request: "checkhandle",
-        handle: handle,
-    };
-    console.log(message)
-    connection.send(JSON.stringify(message));
+    let handle = document.getElementById("twitterAccount").value;
+    let request = "checkhandle"
+    let message = {request, handle};
+    sendMessage(JSON.stringify(message));
 }
-
 
 function handleMessage(message) {
-  // do something
+  if (obj.response === "quess") {
+      //cleantable();
+      //createTable(obj)
+  }
+  /**----------------------------------------------**/
+  else if (obj.response === "checkhandle") {
+    if(!obj.valid){
+      let handle = document.getElementById("twitterAccount").value;
+    }
+
 }
