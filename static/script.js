@@ -40,8 +40,7 @@ function checkUsername() {
     sendMessage(JSON.stringify(message));
 }
 
-function handleMessage(message) {
-    let obj = JSON.parse(message);
+function handleMessage(obj) {
     if (obj.response === "quess") {
         //cleantable();
         //createTable(obj)
