@@ -41,14 +41,16 @@ function checkUsername() {
 }
 
 function handleMessage(message) {
-  if (obj.response === "quess") {
-      //cleantable();
-      //createTable(obj)
-  }
-  /**----------------------------------------------**/
-  else if (obj.response === "checkhandle") {
-    if(!obj.valid){
-      let handle = document.getElementById("twitterAccount").value;
+    let obj = JSON.parse(message);
+    if (obj.response === "quess") {
+        //cleantable();
+        //createTable(obj)
     }
+    /**----------------------------------------------**/
+    else if (obj.response === "checkhandle") {
+        if (!obj.valid) {
+            let handle = document.getElementById("twitterAccount").value;
+        }
 
+    }
 }
