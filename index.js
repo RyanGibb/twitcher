@@ -14,9 +14,11 @@ var client = new Twitter({
 
 function getTweet(screen_name, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
+
     if (error) {
-      // return error json
-      return null;
+      let human_readable_error = "Screen name does not exist";
+      let error_tweet = {human_readable_error, error};
+      callback(error_tweet);
     }
     let body = tweets[0].text;
     let timestamp = tweets[0].created_at;
