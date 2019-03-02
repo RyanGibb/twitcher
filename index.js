@@ -36,7 +36,7 @@ function getUser(screen_name, callback){
     let tweet_count = user[0].statuses_count;
     let follower_count = user[0].followers_count;
     let userinfo = {valid, follower_count, tweet_count};
-    callback(null, userinfo);
+    callback(userinfo);
   })
 }
 
@@ -116,10 +116,7 @@ wsServer.on('connection', function(ws, req) {
       if(!handle) {
         return respondError(ws, req, 'missing handle for "userinfo" request');
       }
-      getUser(handle, function(error, user) {
-        if (error) {
-          return respondError(ws, req, "Error getting user info.", error);
-        }
+      getUser(handle, function(user) {
         let response = "userinfo";
         let message = {response, user};
         respond(ws, req, message);
