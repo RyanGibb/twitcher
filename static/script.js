@@ -32,6 +32,34 @@ function sendMessage(messageString) {
   ws.send(messageString);
 }
 
+function onloadfunction() {
+
+    connection.onmessage = (message) => {
+
+
+        console.log(message);
+
+        let messagestr = message.data.toString();
+        try {
+            let obj = JSON.parse(messagestr);
+            /**----------------------------------------------**/
+            if (obj.response === "quess") {
+                //cleantable();
+                //createTable(obj)
+            }
+            /**----------------------------------------------**/
+            else if (obj.response === "check") {
+                // console.log(obj.info.filecontent);
+                //saveByteArray([binaryStringToArrayBuffer(obj.info.filecontent)], filetoDownload);
+            }
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+}
 
 
 
