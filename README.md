@@ -49,3 +49,9 @@ Modes:
    }
 }
 
+{
+  response: error,
+  human_readable_error: ...,
+  error: ...
+}
+
