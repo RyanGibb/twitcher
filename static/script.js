@@ -112,6 +112,6 @@ function handleMessage(message) {
     }
 }
 function play() {
-    console.log(window.location.href )
-    //window.location.replace(window.location.href +);
+    console.log(window.location.href +"game.html" )
+    window.location.replace(window.location.href +"game.html");
 }
