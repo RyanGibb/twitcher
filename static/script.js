@@ -112,7 +112,6 @@ function handleMessage(obj) {
         console.log("quess start")
         console.log(obj.tweet.handle)
         answer = obj.tweet.handle
-        let time = obj.tweet.timestamp
         console.log(answer)
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
@@ -127,7 +126,6 @@ function handleMessage(obj) {
             };
             buttons.appendChild(btn)
         })
-        document.getElementById("date").innerText = time
     }
     /**----------------------------------------------**/
     else if (obj.response === "userinfo") {
@@ -171,6 +169,7 @@ function answerQuestion(userAnswer,btn) {
     if(answer === userAnswer ){
 
         btn.classList.toggle("button");
+        alert("correct")
         guess()
     }else{
         alert("try again")
