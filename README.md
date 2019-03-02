@@ -41,7 +41,7 @@ Modes:
 
 
 {
-  request: checkhandle,
+  response: checkhandle,
   valid: true/false
 }
 
