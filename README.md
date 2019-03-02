@@ -1,4 +1,4 @@
-# stackscheck2019
+# Twitcher
 Tweet guessing game.
 
 Modes:
