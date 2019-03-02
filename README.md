@@ -44,8 +44,8 @@ Modes:
   response: userinfo,
   user: {
     valid: true/false,
-    followers: ...,
-    tweets: ...
+    follower_count: ...,
+    tweet_count: ...
    }
 }
 
