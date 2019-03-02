@@ -107,8 +107,7 @@ wsServer.on('connection', function(ws, req) {
         }
         let response = "guess";
         let message = {response, tweet};
-        let messageString = JSON.stringify(message);
-        respond(ws, req, messageString);
+        respond(ws, req, message);
       })
     }
 
@@ -123,8 +122,7 @@ wsServer.on('connection', function(ws, req) {
         }
         let response = "userinfo";
         let message = {response, user};
-        let messageString = JSON.stringify(message);
-        respond(ws, req, messageString);
+        respond(ws, req, message);
       })
     }
 
