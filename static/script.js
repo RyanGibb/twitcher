@@ -39,8 +39,59 @@ function checkUsername() {
     let message = {request, handle};
     sendMessage(JSON.stringify(message));
 }
+var handles = [];
+function addHandle(handle, number, number2) {
+    var index = handles.indexOf(handle);
+    console.log(index)
+    if(index < 0) {
+        handles.push(handle)
+        refreshTable()
+    }
+}
+function removeHandle(handle){
 
-function handleMessage(obj) {
+    console.log(handles)
+    var index = handles.indexOf(handle);
+    if (index > -1) {
+        handles.splice(index, 1);
+    }
+// array = [2, 9]
+    console.log(handles);
+    refreshTable()
+}
+function refreshTable(){
+    let table = document.getElementById("UserList")
+    let old_tbody = table.getElementsByTagName('tbody')
+    var new_tbody = document.createElement('tbody');
+    let count = 1
+    handles.forEach(function(element) {
+
+        let row = new_tbody.insertRow(0);
+        let cell0 = row.insertCell(0);
+        let cell1 = row.insertCell(1);
+        let cell2 = row.insertCell(2);
+        let cell3 = row.insertCell(3);
+        let cell4 = row.insertCell(4);
+
+        cell0.innerHTML = count;
+        cell1.innerHTML = element;
+        cell2.innerHTML = 100;
+        cell3.innerHTML = 100;
+        cell4.innerHTML = "<button class=\"deleteButton\" onclick='removeHandle(\"" + element + "\")'>Delete</button>";
+        count++
+    });
+    console.log(new_tbody)
+    console.log(old_tbody)
+    table.replaceChild(new_tbody, old_tbody[0])
+
+
+}
+
+function handleMessage(message) {
+    let obj = JSON.parse(message);
+
+
+
     if (obj.response === "quess") {
         //cleantable();
         //createTable(obj)
@@ -48,8 +99,19 @@ function handleMessage(obj) {
     /**----------------------------------------------**/
     else if (obj.response === "checkhandle") {
         if (!obj.valid) {
+            console.log("does not exist")
             let handle = document.getElementById("twitterAccount").value;
+            console.log(handle)
+        }else{
+            console.log("correct")
+            let handle = document.getElementById("twitterAccount").value;
+            console.log(handle)
+            addHandle(handle,100,100)
         }
 
     }
+}
+function play() {
+    console.log(window.location.href )
+    //window.location.replace(window.location.href +);
 }
