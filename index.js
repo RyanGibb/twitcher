@@ -24,12 +24,18 @@ function getTweet(screen_name, callback){
   })
 }
 
-function checkHandle(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, tweets, reponse) {
+function getUser(screen_name, callback){
+  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, user, reponse) {
+    let valid = False;
     if (error) {
-      return callback(false);
+      let user = {valid};
+      return callback(user);
     }
-    callback(true);
+    valid = True;
+    let tweet_count = user[0].statuses_count;
+    let follower_count = user[0].followers_count;
+    let user = {valid, follower_count, tweet_count};
+    callback(null, user);
   })
 }
 
@@ -105,14 +111,17 @@ wsServer.on('connection', function(ws, req) {
       })
     }
 
-    if (receivedMessage.request == 'checkhandle') {
+    if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
       if(!handle) {
-        return respondError(ws, req, 'missing handle for "checkhandle" request');
+        return respondError(ws, req, 'missing handle for "userinfo" request');
       }
-      checkHandle(handle, function(valid) {
-        let response = "checkhandle";
-        let message = {response, valid};
+      getUser(handle, function(error, user) {
+        if (error) {
+          return respondError(ws, req, "Error getting user info.", error);
+        }
+        let response = "userinfo";
+        let message = {response, user};
         let messageString = JSON.stringify(message);
         respond(ws, req, messageString);
       })
