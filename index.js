@@ -27,16 +27,16 @@ function getTweet(screen_name, callback){
 
 function getUser(screen_name, callback){
   client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, user, reponse) {
-    let valid = false;
+    let valid = False;
     if (error) {
-      let userInfo = {valid};
-      return callback(userInfo);
+      let user = {valid};
+      return callback(user);
     }
-    valid = true;
+    valid = True;
     let tweet_count = user[0].statuses_count;
     let follower_count = user[0].followers_count;
-    let userInfo = {valid, follower_count, tweet_count};
-    callback(null, userInfo);
+    let user = {valid, follower_count, tweet_count};
+    callback(null, user);
   })
 }
 
