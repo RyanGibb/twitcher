@@ -13,7 +13,7 @@ var client = new Twitter({
 });
 
 function getTweet(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name, function(error, tweets, response) {
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + screen_name, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
