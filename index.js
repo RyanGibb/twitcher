@@ -13,12 +13,13 @@ var client = new Twitter({
 });
 
 function getTweet(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
-    let body = tweets[0].text;
-    let timestamp = tweets[0].created_at;
+    let randTweet  = tweets[Math.floor(Math.random()*tweets.length)];
+    let body = randTweet.text;
+    let timestamp = randTweet.created_at;
     let tweet = {body, screen_name, timestamp};
     callback(null, tweet);
   })
