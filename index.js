@@ -105,14 +105,17 @@ wsServer.on('connection', function(ws, req) {
       })
     }
 
-    if (receivedMessage.request == 'checkhandle') {
+    if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
       if(!handle) {
-        return respondError(ws, req, 'missing handle for "checkhandle" request');
+        return respondError(ws, req, 'missing handle for "userinfo" request');
       }
-      checkHandle(handle, function(valid) {
-        let response = "checkhandle";
-        let message = {response, valid};
+      checkHandle(handle, function(error, user) {
+        if (error) {
+          return respondError(ws, req, "Error getting user info.", error);
+        }
+        let response = "userinfo";
+        let message = {response, user};
         let messageString = JSON.stringify(message);
         respond(ws, req, messageString);
       })
