@@ -17,6 +17,9 @@ function getTweet(screen_name, callback){
     if (error) {
       return callback(error);
     }
+    if (tweets.length < 1) {
+      return callback("User has no tweets.")
+    }
     let randTweet  = tweets[Math.floor(Math.random()*tweets.length)];
     let body = randTweet.text;
     let timestamp = randTweet.created_at;
@@ -103,7 +106,7 @@ wsServer.on('connection', function(ws, req) {
       // query api
       getTweet(randHandle, function(error, tweet) {
         if (error) {
-          return respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
+          return respondError(ws, req, "Error getting tweet.", error);
         }
         let response = "guess";
         let message = {response, tweet};

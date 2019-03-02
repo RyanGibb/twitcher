@@ -107,17 +107,15 @@ function handleMessage(obj) {
         let tweetText= document.getElementById("TweetText")
         tweetText.innerText = obj.tweet.body
         answer = obj.tweet.handle
-        let buttons  = document.getElementById("answerButton")
-        while (buttons.firstChild) {
-            myNode.removeChild(myNode.firstChild);
-        }
+        let buttons  = document.getElementById("answerButtons")
+        buttons.innerHTML = ""
         handles.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
             document.body.appendChild(btn);
             btn.onclick = function(){
-                alert('here be dragons');
+                answerQuestion(element)
             };
             buttons.appendChild(btn)
         })
@@ -138,7 +136,7 @@ function handleMessage(obj) {
 
     }
     else if (obj.response === "error") {
-        window.alert(obj.human_readable_error)
+        window.alert(obj.human_readable_error + " : " + obj.error);
     }
 }
 function play() {
@@ -150,8 +148,10 @@ function play() {
         window.alert("You need to add at least 2 twitter accounts");
     }
 }
-function answer() {
-
+function answerQuestion(guess) {
+    if(answer === guess ){
+        alert("ggwp")
+    }
 }
 function guess(){
     let request = "guess"
