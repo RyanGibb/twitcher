@@ -14,8 +14,9 @@
 const express = require('express');
 const http = require('http');
 
-let port = process.getuid(); // type "id" on Linux for uid value
-if (port < 1024) port += 10000; // do not use privileged ports
+//let port = process.getuid(); // type "id" on Linux for uid value
+// if (port < 1024) port += 10000; // do not use privileged ports
+let port = process.env.PORT || 8080;
 
 const app = express();
 const static_dir = 'static';
