@@ -12,18 +12,18 @@ var client = new Twitter({
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
 
-function getTweet(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name, function(error, tweets, response) {
+function getTweet(handle, callback){
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
     if (tweets.length < 1) {
-      return callback(screen_name + " has no tweets.")
+      return callback(handle + " has no tweets.")
     }
     let randTweet  = tweets[Math.floor(Math.random()*tweets.length)];
     let body = randTweet.text;
     let timestamp = randTweet.created_at;
-    let tweet = {body, screen_name, timestamp};
+    let tweet = {body, handle, timestamp};
     callback(null, tweet);
   })
 }
