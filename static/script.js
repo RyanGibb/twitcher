@@ -34,7 +34,7 @@ function sendMessage(messageString) {
 
 function checkUsername() {
     let handle = document.getElementById("twitterAccount").value;
-    let request = "checkhandle"
+    let request = "userinfo"
     let message = {request, handle};
     sendMessage(JSON.stringify(message));
 }
@@ -91,21 +91,21 @@ function handleMessage(message) {
 
 
 
-    if (obj.response === "quess") {
+    if (obj.response === "guess") {
         //cleantable();
         //createTable(obj)
     }
     /**----------------------------------------------**/
-    else if (obj.response === "checkhandle") {
-        if (!obj.valid) {
+    else if (obj.response === "userinfo") {
+        if (!obj.user.valid) {
             console.log("does not exist")
             let handle = document.getElementById("twitterAccount").value;
             console.log(handle)
-        }else{
+        } else {
             console.log("correct")
             let handle = document.getElementById("twitterAccount").value;
             console.log(handle)
-            addHandle(handle,100,100)
+            addHandle(handle, obj.user.tweet_count,obj.user.follower_count)
         }
 
     }
