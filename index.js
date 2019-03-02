@@ -15,7 +15,7 @@ var client = new Twitter({
 function getTweet(screen_name, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
     if (error) {
-      callback(error);
+      return callback(error);
     }
     let body = tweets[0].text;
     let timestamp = tweets[0].created_at;
@@ -24,9 +24,15 @@ function getTweet(screen_name, callback){
   })
 }
 
-getTweet("realDonaldTrump", function(tweet) {
-  console.log(tweet);
-})
+function checkHandle(screen_name, callback){
+  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, tweets, reponse) {
+    if (error) {
+      return callback(false);
+    }
+    callback(true);
+  })
+}
+
 
 //----------------------------------------------------------------------------
 //                              HTTP Server
@@ -91,14 +97,12 @@ wsServer.on('connection', function(ws, req) {
       // query api
       getTweet(randHandle, function(error, tweet) {
         if (error) {
-          respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
+          return respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
         }
-        else {
-          let response = "guess";
-          let message = {response, tweet};
-          let messageString = JSON.stringify(message);
-          respond(ws, req, messageString);
-        }
+        let response = "guess";
+        let message = {response, tweet};
+        let messageString = JSON.stringify(message);
+        respond(ws, req, messageString);
       })
     }
 
