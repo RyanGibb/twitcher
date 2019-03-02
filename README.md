@@ -20,7 +20,12 @@ Modes:
     ...
   ]
 }
-   
+
+{
+  request: checkhandle,
+  handle: ...
+}
+
 ### Response
 
 {
@@ -31,3 +36,10 @@ Modes:
     body:
    }
 }
+
+
+{
+  request: checkhandle,
+  valid: true/false
+}
+
