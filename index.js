@@ -3,10 +3,31 @@
 //                              Twitter API
 //----------------------------------------------------------------------------
 
+var Twitter = require('twitter');
+
+var client = new Twitter({
   consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
+  consumer_secret: 'q9oWZFamxgK7jTmB1Gc8Y4SKtPr6Tjn4etFYuM9iST5jEgcfhe',
+  access_token_key: '1101853152939257856-Hsoh6KAbgZXwn6jA4XjKSu0cCgNQNt',
+  access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
+});
 
+function getTweet(screen_name, callback){
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
+    if (error) {
+      // return error json
+      return null;
+    }
+    let body = tweets[0].text;
+    let timestamp = tweets[0].created_at;
+    let tweet = {body, screen_name, timestamp};
+    callback(tweet);
+  })
+}
 
-
+getTweet("realDonaldTrump", function(tweet) {
+  console.log(tweet);
+})
 
 //----------------------------------------------------------------------------
 //                              HTTP Server
