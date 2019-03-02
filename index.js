@@ -61,8 +61,8 @@ wsServer.on('connection', function(ws, req) {
     }
 
     if (receivedMessage.request == 'guess') {
-      let parameters = receivedMessage.handles;
-      if(!parameters) {
+      let handles = receivedMessage.handles;
+      if(!handles) {
         respondError(ws, req, 'missing handles for "guess" request');
       }
       // select random tweet
