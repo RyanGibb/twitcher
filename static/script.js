@@ -39,15 +39,22 @@ function checkUsername() {
     sendMessage(JSON.stringify(message));
 }
 var handles = [];
-function addHandle(handle, number, number2) {
+var dictTweetCount = [];
+var dictFollowerCount = [];
+function addHandle(handle, tweetCount, followerCount) {
     var index = handles.indexOf(handle);
     console.log(index)
     if(index < 0) {
+        dictTweetCount[handle] = tweetCount
+        dictFollowerCount[handle] = followerCount
+
         handles.push(handle)
         refreshTable()
+
     }else {
         window.alert("User already exist");
     }
+
 }
 function removeHandle(handle){
 
@@ -73,11 +80,13 @@ function refreshTable(){
         let cell2 = row.insertCell(2);
         let cell3 = row.insertCell(3);
         let cell4 = row.insertCell(4);
-
+        console.log(dictTweetCount)
+        console.log(dictFollowerCount)
+        console.log(dictTweetCount[element])
         cell0.innerHTML = count;
         cell1.innerHTML = element;
-        cell2.innerHTML = 100;
-        cell3.innerHTML = 100;
+        cell2.innerHTML = dictTweetCount[element];
+        cell3.innerHTML = dictFollowerCount[element];
         cell4.innerHTML = "<button class=\"deleteButton\" onclick='removeHandle(\"" + element + "\")'>Delete</button>";
         count++
     });
@@ -87,19 +96,29 @@ function refreshTable(){
 
 
 }
-
-function handleMessage(message) {
-    let obj = JSON.parse(message);
+var answer
+function handleMessage(obj) {
 
 
 
     if (obj.response === "guess") {
-<<<<<<< HEAD
-        //cleantable();
-        //createTable(obj)
-=======
-        console.log(obj.tweet.body)
->>>>>>> 47dfd8b5d48e48b23b0f48ad282c7fab4cdd2e3b
+        let tweetText= document.getElementById("TweetText")
+        tweetText.innerText = obj.tweet.body
+        answer = obj.tweet.handle
+        let buttons  = document.getElementById("answerButton")
+        while (buttons.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+        handles.forEach(function (element) {
+            var btn = document.createElement("BUTTON");        // Create a <button> element
+            var t = document.createTextNode(element);       // Create a text node
+            btn.appendChild(t);                                // Append the text to <button>
+            document.body.appendChild(btn);
+            btn.onclick = function(){
+                alert('here be dragons');
+            };
+            buttons.appendChild(btn)
+        })
     }
     /**----------------------------------------------**/
     else if (obj.response === "userinfo") {
@@ -139,8 +158,7 @@ function guess(){
 }
 function getQuestion(){
     guess()
-    let tweetText= document.getElementById("TweetText")
-    let buttons  = document.getElementById("answerButton")
+
 
 }
 
