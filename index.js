@@ -14,16 +14,13 @@ var client = new Twitter({
 
 function getTweet(screen_name, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
-
     if (error) {
-      let human_readable_error = "Screen name does not exist";
-      let error_tweet = {human_readable_error, error};
-      callback(error_tweet);
+      callback(error);
     }
     let body = tweets[0].text;
     let timestamp = tweets[0].created_at;
     let tweet = {body, screen_name, timestamp};
-    callback(tweet);
+    callback(null, tweet);
   })
 }
 
@@ -86,12 +83,26 @@ wsServer.on('connection', function(ws, req) {
 
     if (receivedMessage.request == 'guess') {
       let handles = receivedMessage.handles;
+      console.log(handles)
       if(!handles) {
         respondError(ws, req, 'missing handles for "guess" request');
       }
-      // select random tweet
+      // select random handle
+      let randHandle = handles[Math.floor(Math.random()*handles.length)];
       // query api
+      getTweet(randHandle, function(error, tweet) {
+        if (error) {
+          respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
+        }
+        else {
+          let response = "guess";
+          let message = {response, tweet};
+          let messageString = JSON.stringify(message);
+          respond(ws, req, messageString);
+        }
+      })
     }
+    
     else {
       respondError(ws, req, 'unsupported request "' + receivedMessage.request + '"');
     }
@@ -100,15 +111,15 @@ wsServer.on('connection', function(ws, req) {
 });
 
 function respondError(ws, req, human_readable_error, error) {
-  let responce = 'error';
-  responceMessage = {responce, human_readable_error, error};
-  respond(ws, req, responceMessage);
+  let response = 'error';
+  responseMessage = {response, human_readable_error, error};
+  respond(ws, req, responseMessage);
 }
 
 
 
-function respond(ws, req, responceMessage) {
-  var messageString = JSON.stringify(responceMessage);
+function respond(ws, req, responseMessage) {
+  var messageString = JSON.stringify(responseMessage);
   ws.send(messageString);
   console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString)
   );
