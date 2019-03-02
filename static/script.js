@@ -93,8 +93,8 @@ function handleMessage(message) {
 
 
 
-    if (obj.response === "quess") {
-        console.log(obj.tweet)
+    if (obj.response === "guess") {
+        console.log(obj.tweet.body)
     }
     /**----------------------------------------------**/
     else if (obj.response === "checkhandle") {
@@ -127,13 +127,13 @@ function play() {
 function answer() {
 
 }
-function quess(){
-    let request = "quess"
+function guess(){
+    let request = "guess"
     let message = {request, handles};
     sendMessage(JSON.stringify(message));
 }
 function getQuestion(){
-
+    guess()
     let tweetText= document.getElementById("TweetText")
     let buttons  = document.getElementById("answerButton")
 
