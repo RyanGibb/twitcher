@@ -32,12 +32,17 @@ function sendMessage(messageString) {
   ws.send(messageString);
 }
 
+//----------------------------------------------------------------------------
+//                              HTML Manipulation
+//----------------------------------------------------------------------------
+
 function checkUsername() {
     let handle = document.getElementById("twitterAccount").value;
     let request = "userinfo"
     let message = {request, handle};
     sendMessage(JSON.stringify(message));
 }
+
 var handles = [];
 var dictTweetCount = [];
 var dictFollowerCount = [];
@@ -54,8 +59,8 @@ function addHandle(handle, tweetCount, followerCount) {
     }else {
         window.alert("User already exist");
     }
-
 }
+
 function removeHandle(handle){
 
     console.log(handles)
@@ -67,6 +72,7 @@ function removeHandle(handle){
     console.log(handles);
     refreshTable()
 }
+
 function refreshTable(){
     let table = document.getElementById("UserList")
     let old_tbody = table.getElementsByTagName('tbody')
@@ -93,14 +99,10 @@ function refreshTable(){
     console.log(new_tbody)
     console.log(old_tbody)
     table.replaceChild(new_tbody, old_tbody[0])
-
-
 }
+
 var answer
 function handleMessage(obj) {
-
-
-
     if (obj.response === "guess") {
         let tweetText= document.getElementById("TweetText")
         tweetText.innerText = obj.tweet.body
@@ -161,4 +163,3 @@ function getQuestion(){
 
 
 }
-
