@@ -15,7 +15,7 @@ var client = new Twitter({
 });
 
 function getBlankedTweet(handle, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
@@ -32,14 +32,16 @@ function getBlankedTweet(handle, callback){
 }
 
 function getTweet(handle, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
     if (tweets.length < 1) {
       return callback(handle + " has no tweets.")
     }
-    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
+    let i = Math.floor(Math.random()*tweets.length);
+    console.log(tweets.length + " " + i);
+    let randTweet = tweets[i];
     let body = randTweet.text;
     let timestamp = randTweet.created_at;
     let tweet = {body, handle, timestamp};
