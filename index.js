@@ -18,7 +18,7 @@ function getTweet(screen_name, callback){
       return callback(error);
     }
     if (tweets.length < 1) {
-      return callback("User has no tweets.")
+      return callback(screen_name + " has no tweets.")
     }
     let randTweet  = tweets[Math.floor(Math.random()*tweets.length)];
     let body = randTweet.text;
