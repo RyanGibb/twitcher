@@ -5,7 +5,6 @@
 //                              WebSocket Client
 //----------------------------------------------------------------------------
 
-
 const wsUrl = 'wss://' + location.hostname+ ":"+location.port+ '/twitcher/';
 const ws = new WebSocket(wsUrl);
 
@@ -112,6 +111,9 @@ function handleMessage(message) {
     }
 }
 function play() {
-    console.log(window.location.href +"game.html" )
-    window.location.replace(window.location.href +"game.html");
+    if(handles.length > 1) {
+        document.getElementById("FirstPage").style.display = "none";
+    }else{
+        window.alert("You need to add at least 2 twitter accounts");
+    }
 }
