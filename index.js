@@ -3,6 +3,7 @@
 //                              Twitter API
 //----------------------------------------------------------------------------
 
+  consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
 
 
 
