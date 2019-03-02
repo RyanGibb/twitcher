@@ -45,6 +45,8 @@ function addHandle(handle, number, number2) {
     if(index < 0) {
         handles.push(handle)
         refreshTable()
+    }else {
+        window.alert("User already exist");
     }
 }
 function removeHandle(handle){
@@ -92,13 +94,13 @@ function handleMessage(message) {
 
 
     if (obj.response === "quess") {
-        //cleantable();
-        //createTable(obj)
+        console.log(obj.tweet)
     }
     /**----------------------------------------------**/
     else if (obj.response === "checkhandle") {
         if (!obj.valid) {
             console.log("does not exist")
+            window.alert("This user does not exist");
             let handle = document.getElementById("twitterAccount").value;
             console.log(handle)
         }else{
@@ -109,11 +111,31 @@ function handleMessage(message) {
         }
 
     }
+    else if (obj.response === "error") {
+        window.alert(obj.human_readable_error)
+    }
 }
 function play() {
     if(handles.length > 1) {
         document.getElementById("FirstPage").style.display = "none";
+        document.getElementById("SecondPage").style.display = "";
+        getQuestion()
     }else{
         window.alert("You need to add at least 2 twitter accounts");
     }
 }
+function answer() {
+
+}
+function quess(){
+    let request = "quess"
+    let message = {request, handles};
+    sendMessage(JSON.stringify(message));
+}
+function getQuestion(){
+
+    let tweetText= document.getElementById("TweetText")
+    let buttons  = document.getElementById("answerButton")
+
+}
+
