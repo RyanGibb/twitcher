@@ -15,7 +15,7 @@ var client = new Twitter({
 function getTweet(screen_name, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + screen_name + '&count=1', function(error, tweets, reponse) {
     if (error) {
-      callback(error);
+      return callback(error);
     }
     let body = tweets[0].text;
     let timestamp = tweets[0].created_at;
@@ -24,9 +24,15 @@ function getTweet(screen_name, callback){
   })
 }
 
-getTweet("realDonaldTrump", function(tweet) {
-  console.log(tweet);
-})
+function checkHandle(screen_name, callback){
+  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + screen_name, function(error, tweets, reponse) {
+    if (error) {
+      return callback(false);
+    }
+    callback(true);
+  })
+}
+
 
 //----------------------------------------------------------------------------
 //                              HTTP Server
@@ -77,28 +83,38 @@ wsServer.on('connection', function(ws, req) {
       var receivedMessage = JSON.parse(messageString);
     }
     catch(error) {
-      respondError(ws, req, 'error parsing JSON request', error);
-      return;
+      return respondError(ws, req, 'error parsing JSON request', error);
     }
 
     if (receivedMessage.request == 'guess') {
       let handles = receivedMessage.handles;
       if(!handles) {
-        respondError(ws, req, 'missing handles for "guess" request');
+        return respondError(ws, req, 'missing handles for "guess" request');
       }
       // select random handle
       let randHandle = handles[Math.floor(Math.random()*handles.length)];
       // query api
       getTweet(randHandle, function(error, tweet) {
         if (error) {
-          respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
+          return respondError(ws, req, "Error getting tweet, check screen name is correct.", error);
         }
-        else {
-          let response = "guess";
-          let message = {response, tweet};
-          let messageString = JSON.stringify(message);
-          respond(ws, req, messageString);
-        }
+        let response = "guess";
+        let message = {response, tweet};
+        let messageString = JSON.stringify(message);
+        respond(ws, req, messageString);
+      })
+    }
+
+    if (receivedMessage.request == 'checkhandle') {
+      let handle = receivedMessage.handle;
+      if(!handle) {
+        return respondError(ws, req, 'missing handle for "checkhandle" request');
+      }
+      checkHandle(handle, function(valid) {
+        let response = "checkhandle";
+        let message = {response, valid};
+        let messageString = JSON.stringify(message);
+        respond(ws, req, messageString);
       })
     }
 
