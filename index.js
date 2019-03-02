@@ -83,14 +83,13 @@ wsServer.on('connection', function(ws, req) {
       var receivedMessage = JSON.parse(messageString);
     }
     catch(error) {
-      respondError(ws, req, 'error parsing JSON request', error);
-      return;
+      return respondError(ws, req, 'error parsing JSON request', error);
     }
 
     if (receivedMessage.request == 'guess') {
       let handles = receivedMessage.handles;
       if(!handles) {
-        respondError(ws, req, 'missing handles for "guess" request');
+        return respondError(ws, req, 'missing handles for "guess" request');
       }
       // select random handle
       let randHandle = handles[Math.floor(Math.random()*handles.length)];
@@ -101,6 +100,19 @@ wsServer.on('connection', function(ws, req) {
         }
         let response = "guess";
         let message = {response, tweet};
+        let messageString = JSON.stringify(message);
+        respond(ws, req, messageString);
+      })
+    }
+
+    if (receivedMessage.request == 'checkhandle') {
+      let handle = receivedMessage.handle;
+      if(!handle) {
+        return respondError(ws, req, 'missing handle for "checkhandle" request');
+      }
+      checkHandle(handle, function(valid) {
+        let response = "checkhandle";
+        let message = {response, valid};
         let messageString = JSON.stringify(message);
         respond(ws, req, messageString);
       })
