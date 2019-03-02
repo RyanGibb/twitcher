@@ -4,6 +4,8 @@
 //----------------------------------------------------------------------------
 
 var Twitter = require('twitter');
+var WordPOS = require('wordpos');
+let wordpos = WordPOS();
 
 var client = new Twitter({
   consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
@@ -12,20 +14,32 @@ var client = new Twitter({
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
 
-<<<<<<< HEAD
 function getTweet(handle, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
-=======
-function getTweet(screen_name, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + screen_name, function(error, tweets, response) {
->>>>>>> d103c6649630cf79622d1b26499f552f90c1c4e4
+    if (error) {
+      return callback(error);
+    }
+    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
+    let body = randTweet.text;
+    let timestamp = randTweet.created_at;
+    wordpos.getNouns(body, function(nouns){
+      let noun = nouns[Math.floor(Math.random()*nouns.length)];
+      let blanked_body = body.replace(noun, "___");
+      let tweet = {body, blanked_body, noun, handle, timestamp};
+      callback(null, tweet);
+    })
+  })
+}
+
+function getTweet(handle, callback){
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
     if (tweets.length < 1) {
       return callback(handle + " has no tweets.")
     }
-    let randTweet  = tweets[Math.floor(Math.random()*tweets.length)];
+    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
     let body = randTweet.text;
     let timestamp = randTweet.created_at;
     let tweet = {body, handle, timestamp};
