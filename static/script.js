@@ -139,16 +139,16 @@ function handleMessage(obj) {
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
         let words
-        if(theTweet.possibilities.synonyms > 3) {
+        if(theTweet.possibilities.synonyms.length > 3) {
            words = theTweet.possibilities.synonyms.slice(0, 3)
         }else{
             words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms.length)
         }
         console.log(words)
-        if(theTweet.possibilities.antonyms > 3) {
+        if(theTweet.possibilities.antonyms.length > 3) {
             words = words.concat(theTweet.possibilities.antonyms.slice(0, 3))
         }else {
-            words = words.concat(theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.antonyms.length))
+            words = words.concat(theTweet.possibilities.antonyms.slice(0, theTweet.possibilities.antonyms.length))
         }
 
         console.log(words)
@@ -245,12 +245,19 @@ function answerQuestion(userAnswer,btn) {
         $("#question").animate({width:'toggle'},500);
         $("#question").delay(300).animate({width:'toggle'},700);
         //$("#question").show("slide", { direction: "left" }, 1000);
+
+            if(document.getElementById("fs").checked) {
         chooseRandom()
+            }
+            else{
+                getQuestion()
+            }
     }else{
         btn.classList.add("deleteButton","drop");
         btn.onclick = function(){
         };
     }
+
 }
 let dictTweets = []
 function addJson(handler,tweets){
