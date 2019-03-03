@@ -187,6 +187,9 @@ function answerQuestion(userAnswer,btn) {
 
         btn.classList.toggle("button");
         //guess()
+        $("#question").animate({width:'toggle'},500);
+        $("#question").delay(300).animate({width:'toggle'},700);
+        //$("#question").show("slide", { direction: "left" }, 1000);
         chooseRandom()
     }else{
         btn.classList.add("deleteButton","drop");
