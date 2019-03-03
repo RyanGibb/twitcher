@@ -4,8 +4,6 @@
 //----------------------------------------------------------------------------
 
 var Twitter = require('twitter');
-var WordPOS = require('wordpos');
-let wordpos = WordPOS();
 
 var client = new Twitter({
   consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
@@ -14,63 +12,38 @@ var client = new Twitter({
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
 
-function getBlankedTweet(handle, callback){
+function getRecentTweets(handle, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
     }
-    let all_nouns = [];
-    let tweets_with_nouns = [];
+    var recent_tweets = []
     for (let i = 0; i < tweets.length; i++) {
       let tweet = tweets[i];
       let body = tweet.text;
-      let timestamp = randTweet.created_at;
-      wordpos.getNouns(body, function(nouns){
-        if (nouns.length > 0) {
-          tweets_with_nouns.push(tweet);
-          all_nouns.push.apply(all_nouns, nouns);
-        }
-      })
+      let timestamp = tweet.created_at;
+      recent_tweets.push({body, handle, timestamp})
     }
-    // TODO: this
-    let blanked_body = body.replace(noun, "___");
-    let tweet = {body, blanked_body, noun, handle, timestamp};
-    callback(null, tweet);
-  })
-}
-
-function getTweet(handle, callback){
-  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
-    if (error) {
-      return callback(error);
-    }
-    if (tweets.length < 1) {
-      return callback(handle + " has no tweets.")
-    }
-    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
-    console.log(randTweet);
-    let body = randTweet.text;
-    let timestamp = randTweet.created_at;
-    let tweet = {body, handle, timestamp};
-    callback(null, tweet);
+    callback(null, recent_tweets);
   })
 }
 
 function getUser(handle, callback){
-  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user, reponse) {
-    let valid = false;
+  client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user_info, reponse) {
     if (error) {
-      let userinfo = {valid};
-      return callback(userinfo);
+      return callback({human_readable_error: "User doesn't exist.", error});
     }
-    valid = true;
-    let tweet_count = user[0].statuses_count;
-    let follower_count = user[0].followers_count;
-    let userinfo = {valid, follower_count, tweet_count};
-    callback(userinfo);
+    let tweet_count = user_info[0].statuses_count;
+    let follower_count = user_info[0].followers_count;
+    getTweets(handle, function(error, recent_tweets) {
+      if (error) {
+        return callback({human_readable_error: "Error getting tweets.", error});
+      }
+      let user = {handle, follower_count, tweet_count, recent_tweets};
+      callback(user);
+    })
   })
 }
-
 
 //----------------------------------------------------------------------------
 //                              HTTP Server
@@ -124,48 +97,16 @@ wsServer.on('connection', function(ws, req) {
       return respondError(ws, req, 'error parsing JSON request', error);
     }
 
-    if (receivedMessage.request == 'guess') {
-      let handles = receivedMessage.handles;
-      if(!handles) {
-        return respondError(ws, req, 'missing handles for "guess" request');
-      }
-      // select random handle
-      let randHandle = handles[Math.floor(Math.random()*handles.length)];
-      // query api
-      getTweet(randHandle, function(error, tweet) {
-        if (error) {
-          return respondError(ws, req, "Error getting tweet.", error);
-        }
-        let response = "guess";
-        let message = {response, tweet};
-        respond(ws, req, message);
-      })
-    }
-
-    else if (receivedMessage.request == 'blanked') {
-      let handles = receivedMessage.handles;
-      if(!handles) {
-        return respondError(ws, req, 'missing handles for "guess" request');
-      }
-      // select random handle
-      let randHandle = handles[Math.floor(Math.random()*handles.length)];
-      // query api
-      getBlankedTweet(randHandle, function(error, tweet) {
-        if (error) {
-          return respondError(ws, req, "Error getting tweet.", error);
-        }
-        let response = "guess";
-        let message = {response, tweet};
-        respond(ws, req, message);
-      })
-    }
-
-    else if (receivedMessage.request == 'userinfo') {
+    if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
       if(!handle) {
-        return respondError(ws, req, 'missing handle for "userinfo" request');
+        return respondError(ws, req, 'missing handle for userinfo request');
       }
-      getUser(handle, function(user) {
+      // query api
+      getUser(handle, function(error, user) {
+        if (error) {
+          return respondError(ws, req, error.human_readable_error, error.error);
+        }
         let response = "userinfo";
         let message = {response, user};
         respond(ws, req, message);
