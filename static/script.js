@@ -140,23 +140,25 @@ function handleMessage(obj) {
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
         let words
-        if(theTweet.possibilities.synonyms > 3) {
+        if(theTweet.possibilities.synonyms.length > 3) {
            words = theTweet.possibilities.synonyms.slice(0, 3)
         }else{
-            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms)
+            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms.length)
         }
         console.log(words)
-        if(theTweet.possibilities.antonyms > 3) {
-            words = words + theTweet.possibilities.antonyms.slice(0, 3)
+        if(theTweet.possibilities.antonyms.length > 3) {
+            words = words.concat(theTweet.possibilities.antonyms.slice(0, 3))
         }else {
-            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.antonyms)
+            words = words.concat(theTweet.possibilities.antonyms.slice(0, theTweet.possibilities.antonyms.length))
         }
 
         console.log(words)
-        words = words + answer
-        words = shuffle(words);
+        words = words.concat(answer)
+        console.log("words coming")
         console.log(words)
-        words.forEach(function (element) {
+        var clone = words.slice(0)
+        console.log(clone)
+        clone.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
@@ -206,19 +208,22 @@ function shuffle(array) {
     return array;
 }
 function play() {
-    if(document.getElementById("fs").checked) {
 
+    if(document.getElementById("fs").checked) {
         if (handles.length > 1) {
             document.getElementById("FirstPage").style.display = "none";
             document.getElementById("SecondPage").style.display = "";
+            document.getElementById("mode-title").innerHTML = "Guess Who?"
             //getQuestion()
             chooseRandom()
         } else {
             window.alert("You need to add at least 2 twitter accounts");
         }
-    }else{
+    }
+    else{
         document.getElementById("FirstPage").style.display = "none";
         document.getElementById("SecondPage").style.display = "";
+        document.getElementById("mode-title").innerHTML = "Complete The Tweet!!!"
         getQuestion()
     }
 
@@ -256,12 +261,19 @@ function answerQuestion(userAnswer,btn) {
           name.innerHTML = "@?????";
         }, 2000);
         //$("#question").show("slide", { direction: "left" }, 1000);
+
+            if(document.getElementById("fs").checked) {
         chooseRandom()
+            }
+            else{
+                getQuestion()
+            }
     }else{
         btn.classList.add("deleteButton","drop");
         btn.onclick = function(){
         };
     }
+
 }
 let dictTweets = []
 function addJson(handler,tweets){
