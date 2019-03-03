@@ -142,20 +142,22 @@ function handleMessage(obj) {
         if(theTweet.possibilities.synonyms > 3) {
            words = theTweet.possibilities.synonyms.slice(0, 3)
         }else{
-            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms)
+            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms.length)
         }
         console.log(words)
         if(theTweet.possibilities.antonyms > 3) {
-            words = words + theTweet.possibilities.antonyms.slice(0, 3)
+            words = words.concat(theTweet.possibilities.antonyms.slice(0, 3))
         }else {
-            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.antonyms)
+            words = words.concat(theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.antonyms.length))
         }
 
         console.log(words)
-        words = words + answer
-        words = shuffle(words);
+        words = words.concat(answer)
+        console.log("words coming")
         console.log(words)
-        words.forEach(function (element) {
+        var clone = words.slice(0)
+        console.log(clone)
+        clone.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
