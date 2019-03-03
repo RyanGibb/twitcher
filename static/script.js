@@ -166,7 +166,8 @@ function handleMessage(obj) {
 
     }
     else if (obj.response === "error") {
-        window.alert(obj.human_readable_error + " : " + obj.error);
+        console.log(obj.error)
+        window.alert(obj.human_readable_error);
     }
 }
 function shuffle(array) {
