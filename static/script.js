@@ -242,8 +242,11 @@ function getQuestion(){
 function answerQuestion(userAnswer,btn) {
     if(answer === userAnswer ){
 
+        let guessWho = document.getElementById("fs").checked;
+
         btn.classList.toggle("button");
         let name = document.getElementById("handle");
+
         name.innerHTML = "@"+answer;
         name.style.color = "green";
         let profilePic = document.getElementById("avatar");
@@ -254,20 +257,19 @@ function answerQuestion(userAnswer,btn) {
         $("#question").delay(300).animate({width:'toggle'},700);
 
         setTimeout(function() {
-          profilePic.src = "twitcher.jpg";
-          name.style.color = "black";
-          name.innerHTML = "@?????";
-        }, 2000);
-        //$("#question").show("slide", { direction: "left" }, 1000);
+            profilePic.src = "twitcher.jpg";
+            name.style.color = "black";
+            name.innerHTML = "@?????";
+          }, 2000);
 
-            setTimeout(function() {
-            if(document.getElementById("fs").checked) {
-              chooseRandom()
-            }
-            else{
-                getQuestion()
-            }
-            }, 2000);
+        setTimeout(function() {
+          if(guessWho) {
+            chooseRandom()
+          }
+          else {
+            getQuestion()
+          }
+        }, 2000);
     }else{
         btn.classList.add("deleteButton","drop");
         btn.onclick = function(){
@@ -275,6 +277,7 @@ function answerQuestion(userAnswer,btn) {
     }
 
 }
+
 let dictTweets = []
 function addJson(handler,tweets){
     dictTweets[handler] = tweets
