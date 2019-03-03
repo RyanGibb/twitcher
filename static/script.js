@@ -130,7 +130,7 @@ function handleMessage(obj) {
     if (obj.response === "blank") {
         let tweetText= document.getElementById("TweetText")
         console.log(obj.recent_tweets)
-        let theTweet = obj.recent_tweets.pop();
+        let theTweet = obj.recent_tweets[Math.floor(Math.random()*obj.recent_tweets.length)];
 
         console.log("quess start")
         console.log(theTweet.handle)
