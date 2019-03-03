@@ -24,6 +24,16 @@ Modes:
 }
 
 {
+  request: blanked,
+  handles: [
+    handle1,
+    handle2,
+    handle3,
+    ...
+  ]
+ }
+ 
+{
   request: userinfo,
   handle: ...
 }
@@ -33,12 +43,22 @@ Modes:
 {
   response: guess,
   tweet: {
+    body: ...,
     handle: ...,
-    timestamp: ..,
-    body:
+    timestamp: ..
    }
 }
 
+{
+  response: blanked,
+  tweet: {
+    body: ...,
+    blanked_body: ...,
+    noun: ...,
+    handle: ...,
+    timestamp: ..,
+  }
+}
 
 {
   response: userinfo,
@@ -48,7 +68,7 @@ Modes:
     tweet_count: ...
    }
 }
-
+ 
 {
   response: error,
   human_readable_error: ...,
