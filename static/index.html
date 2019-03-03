@@ -13,17 +13,29 @@
     <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
     <link href="https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/press-start-2p" type="text/css"/>
+
 <body class="backgroundDiv" >
 
-<h1 style="text-align: center" >Twitcher </h1>
-<hr>
+
+    <h1 style="text-align: center;font-family: PressStart2PRegular" >Twitcher </h1>
+
 <div id="FirstPage">
 <div style="margin: auto; text-align: center" class="center" >
-
+    <div style="text-align: center">
+    <p style="height: 15px"> Click To Change Game Mode </p>
+    <div  class="flipswitch">
+        <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
+        <label class="flipswitch-label" for="fs">
+            <div class="flipswitch-inner"></div>
+        </label>
+    </div>
+    </div>
+    <p style="height: 15px"> </p>
     <label for="twitterAccount">Add Twitter Account</label>
     <input type="text" id="twitterAccount" name="twitterAccount" placeholder="Twitter  Account.."><input type="submit" value="Submit"  onclick="checkUsername()" >
 </div>
-<hr>
+    <div id="UserListTotal" style="display: none">
 <h2 style="text-align: center"> Twitter Accounts</h2>
 <table id="UserList" class="table table-dark center" style="width: 30%;display: none" >
 
@@ -39,11 +51,13 @@
     <tbody>
     </tbody>
 </table>
-<hr>
+    </div>
 <div class="center" style="; text-align: center">
 
         <button id="playButton" disabled class="button" style="left: 50%" onclick="play()">Play</button>
-        <p id="infoText" style="color: red">Please add at least 2 twitter accounts to play </p>
+    <p style="height: 15px"> </p>
+    <p> </p>
+        <p id="infoText" >Please add at least 2 twitter accounts to play </p>
 </div>
 </div>
 <div id="SecondPage" style="display: none">
@@ -82,6 +96,20 @@
     </div>
     </div>
 </div>
+    <div class="bird-container bird-container--one">
+        <div class="bird bird--one"></div>
+    </div>
 
+    <div class="bird-container bird-container--two">
+        <div class="bird bird--two"></div>
+    </div>
+
+    <div class="bird-container bird-container--three">
+        <div class="bird bird--three"></div>
+    </div>
+
+    <div class="bird-container bird-container--four">
+        <div class="bird bird--four"></div>
+    </div>
 </body>
 </html>

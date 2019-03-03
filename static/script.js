@@ -79,12 +79,15 @@ function removeHandle(handle){
 
 function refreshTable(){
     let table = document.getElementById("UserList")
+    let tabledisplay = document.getElementById("UserListTotal")
     let infoText = document.getElementById("infoText")
     let playButton = document.getElementById("playButton")
     if(handles.length == 0){
         table.style.display = "none"
+        tabledisplay.style.display = "none"
     }else {
         table.style.display = ""
+        tabledisplay.style.display = ""
     }
     if(handles.length < 2 ){
         infoText.style.display = ""
@@ -113,7 +116,7 @@ function refreshTable(){
         cell1.innerHTML = element;
         cell2.innerHTML = dictTweetCount[element];
         cell3.innerHTML = dictFollowerCount[element];
-        cell4.innerHTML = "<button class=\"deleteButton\" onclick='removeHandle(\"" + element + "\")'>Delete</button>";
+        cell4.innerHTML = "<button class=\"deleteButton\"  onclick='removeHandle(\"" + element + "\")'>Delete</button>";
         count++
     });
     console.log(new_tbody)
@@ -123,7 +126,7 @@ function refreshTable(){
 
 let answer = ""
 function handleMessage(obj) {
-    if (obj.response === "guess") {
+    if (obj.response === "blank") {
         let tweetText= document.getElementById("TweetText")
         tweetText.innerText = obj.tweet.body
         console.log("quess start")
@@ -163,18 +166,28 @@ function handleMessage(obj) {
     }
 }
 function play() {
-    if(handles.length > 1) {
+    if(document.getElementById("fs").checked) {
+
+        if (handles.length > 1) {
+            document.getElementById("FirstPage").style.display = "none";
+            document.getElementById("SecondPage").style.display = "";
+            //getQuestion()
+            chooseRandom()
+        } else {
+            window.alert("You need to add at least 2 twitter accounts");
+        }
+    }else{
         document.getElementById("FirstPage").style.display = "none";
         document.getElementById("SecondPage").style.display = "";
-        //getQuestion()
-        chooseRandom()
-    }else{
-        window.alert("You need to add at least 2 twitter accounts");
+        getQuestion()
     }
+
 }
 function guess(){
-    let request = "guess"
-    let message = {request, handles};
+    let rnd = Math.floor(Math.random() * handles.length);
+    let request = "blank"
+     let handle= handles[rnd]
+    let message = {request,handle };
     sendMessage(JSON.stringify(message));
 }
 function getQuestion(){
