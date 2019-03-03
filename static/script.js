@@ -126,6 +126,7 @@ function handleMessage(obj) {
             };
             buttons.appendChild(btn)
         })
+        document.getElementById("date").innerText = obj.tweet.timestamp
     }
     /**----------------------------------------------**/
     else if (obj.response === "userinfo") {
@@ -169,10 +170,8 @@ function answerQuestion(userAnswer,btn) {
     if(answer === userAnswer ){
 
         btn.classList.toggle("button");
-        alert("correct")
         guess()
     }else{
-        alert("try again")
         btn.classList.toggle("deleteButton");
         btn.onclick = function(){
         };
