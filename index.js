@@ -1,9 +1,98 @@
+var randomProperty = function(obj) {
+  var keys = Object.keys(obj)
+  return obj[keys[keys.length * Math.random() << 0]];
+};
 
 //----------------------------------------------------------------------------
 //                              Twitter API
 //----------------------------------------------------------------------------
 
 var Twitter = require('twitter');
+var tcom = require('thesaurus-com');
+const WordPOS = require('wordpos');
+const axios = require('axios');
+var wordpos = new WordPOS();
+
+async function getPos(body) {
+  return new Promise((reject, resolve) => {
+    wordpos.getPOS(body, wordOutput => {
+      if (!wordOutput) {
+        reject("Sorry, couldn't find word output from wordpos :(");
+      }
+
+      const wordArray = wordOutput.nouns.concat(wordOutput.verbs, wordOutput.adjectives, wordOutput.adverbs);
+      resolve(wordArray);
+    })
+  })
+}
+
+async function parseBlankTweets(tweets) {
+  let recent_tweets = []
+  for (let i = 0; i < tweets.length; i++) {
+    let tweet = tweets[i];
+    let body = tweet.text;
+    try {
+      const wordArray = await getPos(body);
+      if (wordArray.length < 1) throw new Error("word array is empty");
+
+      var word = wordArray[Math.floor(Math.random() * wordArray.length)];
+      let possibilites = tcom.search(word);
+      let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+      recent_tweets.push({
+        body,
+        handle,
+        timestamp
+      })
+
+    } catch (error) {
+      console.error("Unable to parse blank tweets :(", error);
+    }
+  }
+  // wordpos.getPOS(body, function(obj) {
+  //   let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
+  //   if (wordArray.length > 0) {
+  //     var word = wordArray[Math.floor(Math.random()*wordArray.length)];
+  //     let possibilites = tcom.search(word);
+  //     let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+  //     recent_tweets.push({body, handle, timestamp})
+  //       if (i >= tweets.length) {
+  //         callback(null, recent_tweets);
+  //       }
+  //   }
+  // })
+
+  return recent_tweets;
+}
+
+function asyncClient(url) {
+    return new Promise((reject, resolve) => {
+      client.get(url, (value, response) => {
+        // if (error) reject(error);
+        resolve({
+          // value, response
+          value: response
+        });
+      })
+    })
+}
+
+function getBlankedTweets(handle, callback) {
+  return asyncClient(`https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=${handle}`)
+    .then(async (response) => {
+      const tweets = response.value;
+      const output = await parseBlankTweets(tweets);
+      console.log('output', output);
+      return output;
+    })
+    .catch(error => {
+      console.error('blanked twetes error', error)
+    })
+  // client.get(`https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=${handle}`, function(error, tweets, response) {
+  //   if (error) {
+  //     return callback(error);
+  //   }
+  // })
+}
 
 var client = new Twitter({
   consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
@@ -12,7 +101,7 @@ var client = new Twitter({
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
 
-function getRecentTweets(handle, callback){
+function getRecentTweets(handle, callback) {
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
     if (error) {
       return callback(error);
@@ -21,14 +110,18 @@ function getRecentTweets(handle, callback){
     for (let i = 0; i < tweets.length; i++) {
       let tweet = tweets[i];
       let body = tweet.text;
-      let timestamp = tweet.created_at;
-      recent_tweets.push({body, handle, timestamp})
+      let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+      recent_tweets.push({
+        body,
+        handle,
+        timestamp
+      })
     }
     callback(null, recent_tweets);
   })
 }
 
-function getUser(handle, callback){
+function getUser(handle, callback) {
   client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user_info, reponse) {
     if (error) {
       return callback(["User doesn't exist.", error]);
@@ -39,7 +132,12 @@ function getUser(handle, callback){
       if (error) {
         return callback(["Error getting tweets.", error]);
       }
-      let user = {handle, follower_count, tweet_count, recent_tweets};
+      let user = {
+        handle,
+        follower_count,
+        tweet_count,
+        recent_tweets
+      };
       callback(null, user);
     })
   })
@@ -64,7 +162,7 @@ app.use(express.static(static_dir));
 const httpServer = http.createServer(app);
 const localhost = '127.0.0.1';
 
-httpServer.listen(port, localhost, function () {
+httpServer.listen(port, localhost, function() {
   console.log('Listening for HTTP requests on localhost, port ' + port);
 });
 
@@ -76,7 +174,9 @@ const ws = require('ws');
 
 const maxLogMessageLength = 200;
 
-const wsServer = new ws.Server({server: httpServer});
+const wsServer = new ws.Server({
+  server: httpServer
+});
 
 wsServer.on('connection', function(ws, req) {
   console.log('WS connection');
@@ -87,19 +187,17 @@ wsServer.on('connection', function(ws, req) {
 
   ws.on('message', function(data) {
     let messageString = data.toString();
-    console.log('WS -> rx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString)
-    );
+    console.log('WS -> rx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
 
     try {
       var receivedMessage = JSON.parse(messageString);
-    }
-    catch(error) {
+    } catch (error) {
       return respondError(ws, req, 'error parsing JSON request', error);
     }
 
     if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
-      if(!handle) {
+      if (!handle) {
         return respondError(ws, req, 'missing handle for userinfo request');
       }
       // query api
@@ -108,9 +206,33 @@ wsServer.on('connection', function(ws, req) {
           return respondError(ws, req, error[0], error[1]);
         }
         let response = "userinfo";
-        let message = {response, user};
+        let message = {
+          response,
+          user
+        };
         respond(ws, req, message);
       })
+
+    }
+
+    else if (receivedMessage.request == 'blank') {
+      let handle = receivedMessage.handle;
+      if (!handle) {
+        return respondError(ws, req, 'missing handle for blank request');
+      }
+      // query api
+      getBlankedTweets(handle)
+        .then(tweets => {
+          let response = "blank";
+          let message = {
+            response,
+            tweets
+          };
+          respond(ws, req, message);
+        })
+        .catch(error => {
+          console.error(error);
+        })
     }
 
     else {
@@ -122,7 +244,11 @@ wsServer.on('connection', function(ws, req) {
 
 function respondError(ws, req, human_readable_error, error) {
   let response = 'error';
-  responseMessage = {response, human_readable_error, error};
+  responseMessage = {
+    response,
+    human_readable_error,
+    error
+  };
   respond(ws, req, responseMessage);
 }
 
@@ -131,8 +257,7 @@ function respondError(ws, req, human_readable_error, error) {
 function respond(ws, req, responseMessage) {
   var messageString = JSON.stringify(responseMessage);
   ws.send(messageString);
-  console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString)
-  );
+  console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
 };
 
 console.log('WebSocket server running');

@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/RyanGibb/twitcher#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "request": "^2.88.0",
+    "thesaurus-com": "^1.2.1",
     "twitter": "^1.7.1",
     "wordpos": "^1.2.0",
     "ws": "^6.1.4"

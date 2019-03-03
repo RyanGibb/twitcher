@@ -37,10 +37,16 @@ function sendMessage(messageString) {
 //----------------------------------------------------------------------------
 
 function checkUsername() {
-    let handle = document.getElementById("twitterAccount").value;
-    let request = "userinfo"
+    let request = "blank";
+    let handle = "realDonaldTrump";
     let message = {request, handle};
-    sendMessage(JSON.stringify(message));
+    let messageString = JSON.stringify(message);
+    sendMessage(messageString);
+
+    // let handle = document.getElementById("twitterAccount").value;
+    // let request = "userinfo"
+    // let message = {request, handle};
+    // sendMessage(JSON.stringify(message));
 }
 
 var handles = [];
@@ -241,4 +247,3 @@ function chooseRandom(){
         chooseRandom()
     }
 }
-
