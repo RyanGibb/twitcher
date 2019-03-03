@@ -29,10 +29,10 @@ function getBlankedTweets(handle, callback){
         let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
         if (wordArray.length > 0) {
           var word = wordArray[Math.floor(Math.random()*wordArray.length)];
-          let possibilites = tcom.search(word);
+          let possibilities = tcom.search(word);
           let body = tweet.text;
           let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
-          recent_tweets.push({body, timestamp, word, possibilites})
+          recent_tweets.push({body, timestamp, word, possibilities})
           console.log(recent_tweets.length + " : " + recent_tweets_max_len)
           if (recent_tweets.length >= recent_tweets_max_len) {
             callback(null, recent_tweets);

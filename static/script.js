@@ -128,17 +128,33 @@ let answer = ""
 function handleMessage(obj) {
     if (obj.response === "blank") {
         let tweetText= document.getElementById("TweetText")
-        tweetText.innerText = obj.tweet.body
+        console.log(obj.recent_tweets)
+        let theTweet = obj.recent_tweets.pop();
+
         console.log("quess start")
-        console.log(obj.tweet.handle)
-        answer = obj.tweet.word
+        console.log(theTweet.handle)
+        answer = theTweet.word
+        tweetText.innerText = theTweet.body.replace(answer,"-----")
         console.log(answer)
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
-        let words = obj.tweet.possibilities.synonyms.slice(0,3)
-        words = words + obj.tweet.possibilities.antonyms.slice(0,3)
+        let words
+        if(theTweet.possibilities.synonyms > 3) {
+           words = theTweet.possibilities.synonyms.slice(0, 3)
+        }else{
+            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms)
+        }
+        console.log(words)
+        if(theTweet.possibilities.antonyms > 3) {
+            words = words + theTweet.possibilities.antonyms.slice(0, 3)
+        }else {
+            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.antonyms)
+        }
+
+        console.log(words)
         words.add(answer)
         words = shuffle(words);
+        console.log(words)
         words.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
@@ -150,7 +166,7 @@ function handleMessage(obj) {
             };
             buttons.appendChild(btn)
         })
-        document.getElementById("date").innerText = obj.tweet.timestamp
+        document.getElementById("date").innerText = theTweet.timestamp
     }
     /**----------------------------------------------**/
     else if (obj.response === "userinfo") {
