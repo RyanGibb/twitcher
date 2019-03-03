@@ -31,16 +31,16 @@ function getRecentTweets(handle, callback){
 function getUser(handle, callback){
   client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user_info, reponse) {
     if (error) {
-      return callback({human_readable_error: "User doesn't exist.", error});
+      return callback(["User doesn't exist.", error]);
     }
     let tweet_count = user_info[0].statuses_count;
     let follower_count = user_info[0].followers_count;
-    getTweets(handle, function(error, recent_tweets) {
+    getRecentTweets(handle, function(error, recent_tweets) {
       if (error) {
-        return callback({human_readable_error: "Error getting tweets.", error});
+        return callback(["Error getting tweets.", error]);
       }
       let user = {handle, follower_count, tweet_count, recent_tweets};
-      callback(user);
+      callback(null, user);
     })
   })
 }
@@ -105,7 +105,7 @@ wsServer.on('connection', function(ws, req) {
       // query api
       getUser(handle, function(error, user) {
         if (error) {
-          return respondError(ws, req, error.human_readable_error, error.error);
+          return respondError(ws, req, error[0], error[1]);
         }
         let response = "userinfo";
         let message = {response, user};

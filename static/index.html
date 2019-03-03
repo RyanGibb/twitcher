@@ -25,7 +25,8 @@
 </div>
 <hr>
 <h2 style="text-align: center"> Twitter Accounts</h2>
-<table id="UserList" class="table table-dark center" style="width: 30%">
+<table id="UserList" class="table table-dark center" style="width: 30%;display: none" >
+
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -41,8 +42,8 @@
 <hr>
 <div class="center" style="; text-align: center">
 
-        <button class="button" style="left: 50%" onclick="play()">Play</button>
-
+        <button id="playButton" disabled class="button" style="left: 50%" onclick="play()">Play</button>
+        <p id="infoText" style="color: red">Please add at least 2 twitter accounts to play </p>
 </div>
 </div>
 <div id="SecondPage" style="display: none">
