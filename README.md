@@ -48,14 +48,16 @@ Modes:
 {
   response: blank,
   handle: ...,
-  tweat: {
-    body: ...,
-    word: ...,
-    timestamp: ...,
-    possibilities: {
-      synonyms: [...],
-      antonyms: [...]
-    }
+  recent_tweets: [
+    {
+      body: ...,
+      word: ...,
+      timestamp: ...,
+      possibilities: {
+        synonyms: [...],
+        antonyms: [...]
+    },
+    ...
   }
 }
 
