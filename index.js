@@ -19,15 +19,23 @@ function getBlankedTweet(handle, callback){
     if (error) {
       return callback(error);
     }
-    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
-    let body = randTweet.text;
-    let timestamp = randTweet.created_at;
-    wordpos.getNouns(body, function(nouns){
-      let noun = nouns[Math.floor(Math.random()*nouns.length)];
-      let blanked_body = body.replace(noun, "___");
-      let tweet = {body, blanked_body, noun, handle, timestamp};
-      callback(null, tweet);
-    })
+    let all_nouns = [];
+    let tweets_with_nouns = [];
+    for (let i = 0; i < tweets.length; i++) {
+      let tweet = tweets[i];
+      let body = tweet.text;
+      let timestamp = randTweet.created_at;
+      wordpos.getNouns(body, function(nouns){
+        if (nouns.length > 0) {
+          tweets_with_nouns.push(tweet);
+          all_nouns.push.apply(all_nouns, nouns);
+        }
+      })
+    }
+    // TODO: this
+    let blanked_body = body.replace(noun, "___");
+    let tweet = {body, blanked_body, noun, handle, timestamp};
+    callback(null, tweet);
   })
 }
 
