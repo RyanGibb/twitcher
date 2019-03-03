@@ -48,17 +48,15 @@ Modes:
 {
   response: blank,
   handle: ...,
-  recent_tweets: [
-    {
-      body: ...,
-      word: ...,
-      timestamp: ...,
-      possibilities: {
-        synonyms: [...],
-        antonyms: [...]
-      }
-    }java
-  ]
+  tweat: {
+    body: ...,
+    word: ...,
+    timestamp: ...,
+    possibilities: {
+      synonyms: [...],
+      antonyms: [...]
+    }
+  }
 }
 
 {
@@ -66,4 +64,3 @@ Modes:
   human_readable_error: ...,
   error: ...
 }
-

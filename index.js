@@ -4,6 +4,10 @@
 //----------------------------------------------------------------------------
 
 var Twitter = require('twitter');
+var tcom = require('thesaurus-com');
+const WordPOS = require('wordpos');
+const axios = require('axios');
+var wordpos = new WordPOS();
 
 var client = new Twitter({
   consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
@@ -11,6 +15,27 @@ var client = new Twitter({
   access_token_key: '1101853152939257856-Hsoh6KAbgZXwn6jA4XjKSu0cCgNQNt',
   access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
 });
+
+function getBlankedTweets(handle, callback){
+  client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
+    if (error) {
+      return callback(error);
+    }
+    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
+    let body = tweet.text;
+    wordpos.getPOS(body, function(obj) {
+      let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
+      if (wordArray.length > 0) {
+        var word = wordArray[Math.floor(Math.random()*wordArray.length)];
+        let possibilites = tcom.search(word);
+        let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+        recent_tweets.push({body, handle, timestamp})
+        callback(null, tweet);
+      }
+    })
+    callback(null, recent_tweets);
+  })
+}
 
 function getRecentTweets(handle, callback){
   client.get('https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name=' + handle, function(error, tweets, response) {
@@ -109,6 +134,22 @@ wsServer.on('connection', function(ws, req) {
         }
         let response = "userinfo";
         let message = {response, user};
+        respond(ws, req, message);
+      })
+    }
+
+    else if (receivedMessage.request == 'blanked') {
+      let handle = receivedMessage.handle;
+      if(!handle) {
+        return respondError(ws, req, 'missing handle for blanked request');
+      }
+      // query api
+      getBlankedTweets(handle, function(error, tweet) {
+        if (error) {
+          return respondError(ws, req, "Error getting tweet", error);
+        }
+        let response = "blanked";
+        let message = {response, tweet};
         respond(ws, req, message);
       })
     }
