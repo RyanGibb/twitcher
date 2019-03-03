@@ -20,19 +20,28 @@ function getBlankedTweets(handle, callback){
     if (error) {
       return callback(error);
     }
-    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
-    let body = tweet.text;
-    wordpos.getPOS(body, function(obj) {
-      let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
-      if (wordArray.length > 0) {
-        var word = wordArray[Math.floor(Math.random()*wordArray.length)];
-        let possibilites = tcom.search(word);
-        let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
-        recent_tweets.push({body, handle, timestamp})
-        callback(null, tweet);
-      }
-    })
-    callback(null, recent_tweets);
+    let recent_tweets_max_len = tweets.length;
+    let recent_tweets = []
+    for (let i = 0; i < tweets.length; i+=1) {
+      let tweet = tweets[i];
+      let body = tweet.text;
+      wordpos.getPOS(body, function(obj) {
+        let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
+        if (wordArray.length > 0) {
+          var word = wordArray[Math.floor(Math.random()*wordArray.length)];
+          let possibilites = tcom.search(word);
+          let body = tweet.text;
+          let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+          let tweets = {body, timestamp, word, possibilites};
+          if (recent_tweets.length >= recent_tweets_max_len) {
+            callback(null, tweets);
+          }
+        }
+        else {
+          recent_tweets_max_len -= 1;
+        }
+      })
+    }
   })
 }
 
@@ -152,35 +161,15 @@ wsServer.on('connection', function(ws, req) {
 
     else if (receivedMessage.request == 'blank') {
       let handle = receivedMessage.handle;
-      if (!handle) {
-        return respondError(ws, req, 'missing handle for blank request');
-      }
-      // query api
-      getBlankedTweets(handle)
-        .then(tweets => {
-          let response = "blank";
-          let message = {
-            response,
-            tweets
-          };
-          respond(ws, req, message);
-        })
-        .catch(error => {
-          console.error(error);
-        })
-    }
-
-    else if (receivedMessage.request == 'blanked') {
-      let handle = receivedMessage.handle;
       if(!handle) {
-        return respondError(ws, req, 'missing handle for blanked request');
+        return respondError(ws, req, 'missing handle for blank request');
       }
       // query api
       getBlankedTweets(handle, function(error, tweet) {
         if (error) {
           return respondError(ws, req, "Error getting tweet", error);
         }
-        let response = "blanked";
+        let response = "blank";
         let message = {response, tweet};
         respond(ws, req, message);
       })
