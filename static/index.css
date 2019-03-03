@@ -144,7 +144,7 @@ body {
     border-right: 20px solid #ecf0f1; }
 
 .timeline {
-    width: 560px;
+    width: 50%;
     display: block;
     margin: auto;
     background-color: #dde1e2;
