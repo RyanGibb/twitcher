@@ -14,26 +14,6 @@ Modes:
 ### Request
 
 {
-  request: guess,
-  handles: [
-    handle1,
-    handle2,
-    handle3,
-    ...
-  ]
-}
-
-{
-  request: blanked,
-  handles: [
-    handle1,
-    handle2,
-    handle3,
-    ...
-  ]
- }
- 
-{
   request: userinfo,
   handle: ...
 }
@@ -41,31 +21,24 @@ Modes:
 ### Response
 
 {
-  response: guess,
-  tweet: {
-    body: ...,
-    handle: ...,
-    timestamp: ..
-   }
-}
-
-{
-  response: blanked,
-  tweet: {
-    body: ...,
-    blanked_body: ...,
-    noun: ...,
-    handle: ...,
-    timestamp: ..,
-  }
-}
-
-{
   response: userinfo,
+  valid: true/false,
   user: {
-    valid: true/false,
     follower_count: ...,
     tweet_count: ...
+    recent-tweets: [
+      {
+        body: ...,
+        handle: ...,
+        timestamp: ..
+      },
+      {
+        body: ...,
+        handle: ...,
+        timestamp: ..
+      },
+      ...
+    ]
    }
 }
  
