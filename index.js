@@ -20,19 +20,29 @@ function getBlankedTweets(handle, callback){
     if (error) {
       return callback(error);
     }
-    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
-    let body = tweet.text;
-    wordpos.getPOS(body, function(obj) {
-      let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
-      if (wordArray.length > 0) {
-        var word = wordArray[Math.floor(Math.random()*wordArray.length)];
-        let possibilites = tcom.search(word);
-        let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
-        recent_tweets.push({body, handle, timestamp})
-        callback(null, tweet);
-      }
-    })
-    callback(null, recent_tweets);
+    let recent_tweets_max_len = tweets.length;
+    let recent_tweets = []
+    for (let i = 0; i < tweets.length; i+=1) {
+      let tweet = tweets[i];
+      let body = tweet.text;
+      wordpos.getPOS(body, function(obj) {
+        let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs);
+        if (wordArray.length > 0) {
+          var word = wordArray[Math.floor(Math.random()*wordArray.length)];
+          let possibilities = tcom.search(word);
+          let body = tweet.text;
+          let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+          recent_tweets.push({body, timestamp, word, possibilities})
+          console.log(recent_tweets.length + " : " + recent_tweets_max_len)
+          if (recent_tweets.length >= recent_tweets_max_len) {
+            callback(null, recent_tweets);
+          }
+        }
+        else {
+          recent_tweets_max_len -= 1;
+        }
+      })
+    }
   })
 }
 
@@ -63,6 +73,7 @@ function getUser(handle, callback) {
     }
     let tweet_count = user_info[0].statuses_count;
     let follower_count = user_info[0].followers_count;
+    let profile_pic_url = user_info[0].profile_image_url;
     getRecentTweets(handle, function(error, recent_tweets) {
       if (error) {
         return callback(["Error getting tweets.", error]);
@@ -71,6 +82,7 @@ function getUser(handle, callback) {
         handle,
         follower_count,
         tweet_count,
+        profile_pic_url,
         recent_tweets
       };
       callback(null, user);
@@ -152,36 +164,16 @@ wsServer.on('connection', function(ws, req) {
 
     else if (receivedMessage.request == 'blank') {
       let handle = receivedMessage.handle;
-      if (!handle) {
+      if(!handle) {
         return respondError(ws, req, 'missing handle for blank request');
       }
       // query api
-      getBlankedTweets(handle)
-        .then(tweets => {
-          let response = "blank";
-          let message = {
-            response,
-            tweets
-          };
-          respond(ws, req, message);
-        })
-        .catch(error => {
-          console.error(error);
-        })
-    }
-
-    else if (receivedMessage.request == 'blanked') {
-      let handle = receivedMessage.handle;
-      if(!handle) {
-        return respondError(ws, req, 'missing handle for blanked request');
-      }
-      // query api
-      getBlankedTweets(handle, function(error, tweet) {
+      getBlankedTweets(handle, function(error, recent_tweets) {
         if (error) {
           return respondError(ws, req, "Error getting tweet", error);
         }
-        let response = "blanked";
-        let message = {response, tweet};
+        let response = "blank";
+        let message = {response, recent_tweets};
         respond(ws, req, message);
       })
     }
