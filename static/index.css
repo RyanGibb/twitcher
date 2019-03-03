@@ -334,6 +334,33 @@ button[disabled]{
     color: #666666;
 }
 
+.drop {
+    animation: drop 1.7s forwards;
+}
+@keyframes drop {
+    0% {
+        transform-origin: center;
+        opacity: 1;
+    }
+    20% {
+        transform:
+                translate3d(0, 20px, 0)
+                rotate3d(0, 0, 1, -10deg);
+        opacity: 1;
+    }
+    40%, 45% {
+        transform:
+                translate3d(0, -120px, 0)
+                rotate3d(0, 0, 1, 10deg);
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        transform:
+                translate3d(0, 2000px, 0)
+                rotate3d(0, 0, 1, 10deg);
+    }
+}
 
 
 

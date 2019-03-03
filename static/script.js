@@ -189,7 +189,7 @@ function answerQuestion(userAnswer,btn) {
         //guess()
         chooseRandom()
     }else{
-        btn.classList.toggle("deleteButton");
+        btn.classList.add("deleteButton","drop");
         btn.onclick = function(){
         };
     }
