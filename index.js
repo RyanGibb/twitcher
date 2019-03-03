@@ -46,14 +46,18 @@ function getRecentTweets(handle, callback){
     for (let i = 0; i < tweets.length; i++) {
       let tweet = tweets[i];
       let body = tweet.text;
-      let timestamp = tweet.created_at;
-      recent_tweets.push({body, handle, timestamp})
+      let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
+      recent_tweets.push({
+        body,
+        handle,
+        timestamp
+      })
     }
     callback(null, recent_tweets);
   })
 }
 
-function getUser(handle, callback){
+function getUser(handle, callback) {
   client.get('https://api.twitter.com/1.1/users/lookup.json?screen_name=' + handle, function(error, user_info, reponse) {
     if (error) {
       return callback(["User doesn't exist.", error]);
@@ -64,7 +68,12 @@ function getUser(handle, callback){
       if (error) {
         return callback(["Error getting tweets.", error]);
       }
-      let user = {handle, follower_count, tweet_count, recent_tweets};
+      let user = {
+        handle,
+        follower_count,
+        tweet_count,
+        recent_tweets
+      };
       callback(null, user);
     })
   })
@@ -89,7 +98,7 @@ app.use(express.static(static_dir));
 const httpServer = http.createServer(app);
 const localhost = '127.0.0.1';
 
-httpServer.listen(port, localhost, function () {
+httpServer.listen(port, localhost, function() {
   console.log('Listening for HTTP requests on localhost, port ' + port);
 });
 
@@ -101,7 +110,9 @@ const ws = require('ws');
 
 const maxLogMessageLength = 200;
 
-const wsServer = new ws.Server({server: httpServer});
+const wsServer = new ws.Server({
+  server: httpServer
+});
 
 wsServer.on('connection', function(ws, req) {
   console.log('WS connection');
@@ -112,19 +123,17 @@ wsServer.on('connection', function(ws, req) {
 
   ws.on('message', function(data) {
     let messageString = data.toString();
-    console.log('WS -> rx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString)
-    );
+    console.log('WS -> rx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
 
     try {
       var receivedMessage = JSON.parse(messageString);
-    }
-    catch(error) {
+    } catch (error) {
       return respondError(ws, req, 'error parsing JSON request', error);
     }
 
     if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
-      if(!handle) {
+      if (!handle) {
         return respondError(ws, req, 'missing handle for userinfo request');
       }
       // query api
@@ -133,9 +142,33 @@ wsServer.on('connection', function(ws, req) {
           return respondError(ws, req, error[0], error[1]);
         }
         let response = "userinfo";
-        let message = {response, user};
+        let message = {
+          response,
+          user
+        };
         respond(ws, req, message);
       })
+
+    }
+
+    else if (receivedMessage.request == 'blank') {
+      let handle = receivedMessage.handle;
+      if (!handle) {
+        return respondError(ws, req, 'missing handle for blank request');
+      }
+      // query api
+      getBlankedTweets(handle)
+        .then(tweets => {
+          let response = "blank";
+          let message = {
+            response,
+            tweets
+          };
+          respond(ws, req, message);
+        })
+        .catch(error => {
+          console.error(error);
+        })
     }
 
     else if (receivedMessage.request == 'blanked') {
@@ -163,7 +196,11 @@ wsServer.on('connection', function(ws, req) {
 
 function respondError(ws, req, human_readable_error, error) {
   let response = 'error';
-  responseMessage = {response, human_readable_error, error};
+  responseMessage = {
+    response,
+    human_readable_error,
+    error
+  };
   respond(ws, req, responseMessage);
 }
 
@@ -172,8 +209,7 @@ function respondError(ws, req, human_readable_error, error) {
 function respond(ws, req, responseMessage) {
   var messageString = JSON.stringify(responseMessage);
   ws.send(messageString);
-  console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString)
-  );
+  console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
 };
 
 console.log('WebSocket server running');
