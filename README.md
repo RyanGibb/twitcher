@@ -22,19 +22,17 @@ Modes:
 
 {
   response: userinfo,
-  valid: true/false,
   user: {
+    handle: ...,
     follower_count: ...,
     tweet_count: ...
-    recent-tweets: [
+    recent_tweets: [
       {
         body: ...,
-        handle: ...,
         timestamp: ..
       },
       {
         body: ...,
-        handle: ...,
         timestamp: ..
       },
       ...
