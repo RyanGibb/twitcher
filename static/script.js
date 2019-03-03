@@ -156,9 +156,7 @@ function handleMessage(obj) {
         words = words.concat(answer)
         console.log("words coming")
         console.log(words)
-        var clone = words.slice(0)
-        console.log(clone)
-        clone.forEach(function (element) {
+        words.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
