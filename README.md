@@ -30,7 +30,8 @@ Modes:
   user: {
     handle: ...,
     follower_count: ...,
-    tweet_count: ...
+    tweet_count: ...,
+    profile_pic_url: ...,
     recent_tweets: [
       {
         body: ...,
