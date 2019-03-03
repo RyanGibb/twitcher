@@ -32,9 +32,10 @@ function getBlankedTweets(handle, callback){
           let possibilites = tcom.search(word);
           let body = tweet.text;
           let timestamp = (new Date(tweet.created_at)).toLocaleDateString();
-          let tweets = {body, timestamp, word, possibilites};
+          recent_tweets.push({body, timestamp, word, possibilites})
+          console.log(recent_tweets.length + " : " + recent_tweets_max_len)
           if (recent_tweets.length >= recent_tweets_max_len) {
-            callback(null, tweets);
+            callback(null, recent_tweets);
           }
         }
         else {
