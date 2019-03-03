@@ -26,7 +26,7 @@ Modes:
   user: {
     follower_count: ...,
     tweet_count: ...
-    recent-tweets: [
+    recent_tweets: [
       {
         body: ...,
         handle: ...,
