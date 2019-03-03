@@ -152,7 +152,7 @@ function handleMessage(obj) {
         }
 
         console.log(words)
-        words.add(answer)
+        words = words + answer
         words = shuffle(words);
         console.log(words)
         words.forEach(function (element) {

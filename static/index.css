@@ -1,5 +1,6 @@
 body {
-    background-image: url("alternateBackground.png");
+    background-image: url("background.gif");
+    background-size: cover;
     font-family: 'PressStart2PRegular';
     font-weight: normal;
     font-style: normal;
