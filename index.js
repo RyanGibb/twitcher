@@ -135,6 +135,24 @@ wsServer.on('connection', function(ws, req) {
       })
     }
 
+    else if (receivedMessage.request == 'blanked') {
+      let handles = receivedMessage.handles;
+      if(!handles) {
+        return respondError(ws, req, 'missing handles for "guess" request');
+      }
+      // select random handle
+      let randHandle = handles[Math.floor(Math.random()*handles.length)];
+      // query api
+      getBlankedTweet(randHandle, function(error, tweet) {
+        if (error) {
+          return respondError(ws, req, "Error getting tweet.", error);
+        }
+        let response = "guess";
+        let message = {response, tweet};
+        respond(ws, req, message);
+      })
+    }
+
     else if (receivedMessage.request == 'userinfo') {
       let handle = receivedMessage.handle;
       if(!handle) {
