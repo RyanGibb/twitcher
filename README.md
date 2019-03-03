@@ -30,7 +30,8 @@ Modes:
   user: {
     handle: ...,
     follower_count: ...,
-    tweet_count: ...
+    tweet_count: ...,
+    profile_pic_url: ...,
     recent_tweets: [
       {
         body: ...,
@@ -48,14 +49,16 @@ Modes:
 {
   response: blank,
   handle: ...,
-  tweat: {
-    body: ...,
-    word: ...,
-    timestamp: ...,
-    possibilities: {
-      synonyms: [...],
-      antonyms: [...]
-    }
+  recent_tweets: [
+    {
+      body: ...,
+      word: ...,
+      timestamp: ...,
+      possibilities: {
+        synonyms: [...],
+        antonyms: [...]
+    },
+    ...
   }
 }
 
