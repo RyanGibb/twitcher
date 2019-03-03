@@ -618,9 +618,9 @@ table {
     float: left;
     width: 50%;
     height: 25px;
-    padding: 0;
+    padding: 2px;
     line-height: 25px;
-    font-size: 17px;
+    font-size: 18px;
     color: white;
     font-family: PressStart2PRegular;
     font-weight: bold;
@@ -634,7 +634,7 @@ table {
     color: #000000;
 }
 .flipswitch-inner:after {
-    content: "Fill in the Blanks";
+    content: "Complete The Tweet!!!";
 
     text-align: center;
     background-color: #3DEBD4;

@@ -131,11 +131,15 @@ function handleMessage(obj) {
         tweetText.innerText = obj.tweet.body
         console.log("quess start")
         console.log(obj.tweet.handle)
-        answer = obj.tweet.handle
+        answer = obj.tweet.word
         console.log(answer)
         let buttons  = document.getElementById("answerButtons")
         buttons.innerHTML = ""
-        handles.forEach(function (element) {
+        let words = obj.tweet.possibilities.synonyms.slice(0,3)
+        words = words + obj.tweet.possibilities.antonyms.slice(0,3)
+        words.add(answer)
+        words = shuffle(words);
+        words.forEach(function (element) {
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode(element);       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
@@ -162,8 +166,27 @@ function handleMessage(obj) {
 
     }
     else if (obj.response === "error") {
-        window.alert(obj.human_readable_error + " : " + obj.error);
+        console.log(obj.error)
+        window.alert(obj.human_readable_error);
     }
+}
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
 }
 function play() {
     if(document.getElementById("fs").checked) {
@@ -188,6 +211,7 @@ function guess(){
     let request = "blank"
      let handle= handles[rnd]
     let message = {request,handle };
+    console.log(message)
     sendMessage(JSON.stringify(message));
 }
 function getQuestion(){
