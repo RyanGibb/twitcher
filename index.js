@@ -168,12 +168,12 @@ wsServer.on('connection', function(ws, req) {
         return respondError(ws, req, 'missing handle for blank request');
       }
       // query api
-      getBlankedTweets(handle, function(error, tweet) {
+      getBlankedTweets(handle, function(error, recent_tweets) {
         if (error) {
           return respondError(ws, req, "Error getting tweet", error);
         }
         let response = "blank";
-        let message = {response, tweet};
+        let message = {response, recent_tweets};
         respond(ws, req, message);
       })
     }
