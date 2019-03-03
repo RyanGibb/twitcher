@@ -46,14 +46,15 @@ function checkUsername() {
 var handles = [];
 var dictTweetCount = [];
 var dictFollowerCount = [];
-function addHandle(handle, tweetCount, followerCount,tweets) {
+var dictProfilePicUrl = [];
+function addHandle(handle, tweetCount, followerCount, tweets, profile_pic_url) {
     if(tweetCount > 0){
     var index = handles.indexOf(handle);
     console.log(index)
     if(index < 0) {
         dictTweetCount[handle] = tweetCount
         dictFollowerCount[handle] = followerCount
-
+        dictProfilePicUrl[handle] = profile_pic_url
         handles.push(handle)
         addJson(handle,tweets)
         refreshTable()
@@ -177,7 +178,7 @@ function handleMessage(obj) {
             console.log(handle)
             console.log(obj)
             let tweets = obj.user.recent_tweets
-            addHandle(handle, obj.user.tweet_count,obj.user.follower_count,tweets)
+            addHandle(handle, obj.user.tweet_count,obj.user.follower_count,tweets, obj.user.profile_pic_url)
 
 
     }
@@ -239,9 +240,21 @@ function answerQuestion(userAnswer,btn) {
     if(answer === userAnswer ){
 
         btn.classList.toggle("button");
+        let name = document.getElementById("handle");
+        name.innerHTML = "@"+answer;
+        name.style.color = "green";
+        let profilePic = document.getElementById("avatar");
+        profilePic.src = dictProfilePicUrl[answer];
+
         //guess()
-        $("#question").animate({width:'toggle'},500);
+        $("#question").delay(1500).animate({width:'toggle'},500);
         $("#question").delay(300).animate({width:'toggle'},700);
+
+        setTimeout(function() {
+          profilePic.src = "twitcher.jpg";
+          name.style.color = "black";
+          name.innerHTML = "@?????";
+        }, 2000);
         //$("#question").show("slide", { direction: "left" }, 1000);
         chooseRandom()
     }else{
@@ -294,4 +307,3 @@ function chooseRandom(){
         chooseRandom()
     }
 }
-
