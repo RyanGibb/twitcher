@@ -18,6 +18,11 @@ Modes:
   handle: ...
 }
 
+{
+  request: blank,
+  handle: ...
+}
+
 ### Response
 
 {
@@ -39,7 +44,23 @@ Modes:
     ]
    }
 }
- 
+
+{
+  response: blank,
+  handle: ...,
+  recent_tweets: [
+    {
+      body: ...,
+      word: ...,
+      timestamp: ...,
+      possibilities: {
+        synonyms: [...],
+        antonyms: [...]
+      }
+    }java
+  ]
+}
+
 {
   response: error,
   human_readable_error: ...,
