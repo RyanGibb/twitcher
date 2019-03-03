@@ -260,12 +260,14 @@ function answerQuestion(userAnswer,btn) {
         }, 2000);
         //$("#question").show("slide", { direction: "left" }, 1000);
 
+            setTimeout(function() {
             if(document.getElementById("fs").checked) {
-        chooseRandom()
+              chooseRandom()
             }
             else{
                 getQuestion()
             }
+            }, 2000);
     }else{
         btn.classList.add("deleteButton","drop");
         btn.onclick = function(){
