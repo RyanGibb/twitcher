@@ -39,9 +39,8 @@ function getTweet(handle, callback){
     if (tweets.length < 1) {
       return callback(handle + " has no tweets.")
     }
-    let i = Math.floor(Math.random()*tweets.length);
-    console.log(tweets.length + " " + i);
-    let randTweet = tweets[i];
+    let randTweet = tweets[Math.floor(Math.random()*tweets.length)];
+    console.log(randTweet);
     let body = randTweet.text;
     let timestamp = randTweet.created_at;
     let tweet = {body, handle, timestamp};
