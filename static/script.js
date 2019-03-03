@@ -207,19 +207,22 @@ function shuffle(array) {
     return array;
 }
 function play() {
-    if(document.getElementById("fs").checked) {
 
+    if(document.getElementById("fs").checked) {
         if (handles.length > 1) {
             document.getElementById("FirstPage").style.display = "none";
             document.getElementById("SecondPage").style.display = "";
+            document.getElementById("mode-title").innerHTML = "Guess Who?"
             //getQuestion()
             chooseRandom()
         } else {
             window.alert("You need to add at least 2 twitter accounts");
         }
-    }else{
+    }
+    else{
         document.getElementById("FirstPage").style.display = "none";
         document.getElementById("SecondPage").style.display = "";
+        document.getElementById("mode-title").innerHTML = "Complete The Tweet!!!"
         getQuestion()
     }
 
@@ -296,4 +299,3 @@ function chooseRandom(){
         chooseRandom()
     }
 }
-
