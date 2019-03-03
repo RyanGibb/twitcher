@@ -73,6 +73,7 @@ function getUser(handle, callback) {
     }
     let tweet_count = user_info[0].statuses_count;
     let follower_count = user_info[0].followers_count;
+    let profile_pic_url = user_info[0].profile_image_url;
     getRecentTweets(handle, function(error, recent_tweets) {
       if (error) {
         return callback(["Error getting tweets.", error]);
@@ -81,6 +82,7 @@ function getUser(handle, callback) {
         handle,
         follower_count,
         tweet_count,
+        profile_pic_url,
         recent_tweets
       };
       callback(null, user);
