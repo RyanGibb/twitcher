@@ -6,7 +6,6 @@
 var Twitter = require('twitter');
 var tcom = require('thesaurus-com');
 const WordPOS = require('wordpos');
-const axios = require('axios');
 var wordpos = new WordPOS();
 
 var client = new Twitter({
