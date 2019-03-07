@@ -1,6 +1,8 @@
 # Twitcher
 Tweet guessing game.
 
+![alt text](https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg)
+
 Live link! https://rtg2.host.cs.st-andrews.ac.uk/twitcher/
 
 Modes:
