@@ -1,15 +1,18 @@
 # Twitcher
 Tweet guessing game.
 
-![alt text](https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg)
+<p align="center">
+  <img width="300" height="300" src="https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg">
+</p>
+<p align="center">
+  Live link! https://rtg2.host.cs.st-andrews.ac.uk/twitcher/
+</p>
 
-Live link! https://rtg2.host.cs.st-andrews.ac.uk/twitcher/
+### Modes:
+  1. Guess who?
+  2. Fill in the blanks!!!
 
-Modes:
-  1. Guess who's tweet
-  2. Fill in the blanks
-  3. Markov chain random tweet
-  4. Multi-user and voting
+
 
 <!---
 ## WebSocket Protocol
