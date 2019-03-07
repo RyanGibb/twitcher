@@ -9,22 +9,18 @@ Modes:
   3. Markov chain random tweet
   4. Multi-user and voting
 
+<!---
 ## WebSocket Protocol
-
 ### Request
-
 {
   request: userinfo,
   handle: ...
 }
-
 {
   request: blank,
   handle: ...
 }
-
 ### Response
-
 {
   response: userinfo,
   user: {
@@ -45,7 +41,6 @@ Modes:
     ]
    }
 }
-
 {
   response: blank,
   handle: ...,
@@ -61,9 +56,9 @@ Modes:
     ...
   }
 }
-
 {
   response: error,
   human_readable_error: ...,
   error: ...
 }
+-->
