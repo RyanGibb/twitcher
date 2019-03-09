@@ -1,12 +1,7 @@
-# Twitcher
+# Twitcher <img align="right" width="150" height="150" src="https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg">  
 Tweet guessing game.
 
-<p align="center">
-  <img width="300" height="300" src="https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg">
-</p>
-<p align="center">
-  Live link! https://rtg2.host.cs.st-andrews.ac.uk/twitcher/
-</p>
+Live link! https://rtg2.host.cs.st-andrews.ac.uk/twitcher/
 
 ### Modes:
   1. Guess who?
@@ -34,7 +29,13 @@ Tweet guessing game.
     tweet_count: ...,
     profile_pic_url: ...,
     recent_tweets: [
-      {
+      {<p align="right">
+5
+  # dsf <img width="300" height="300" src="https://github.com/RyanGibb/twitcher/blob/master/static/alternate.jpg">
+6
+</p>
+7
+<p align="center">
         body: ...,
         timestamp: ..
       },
