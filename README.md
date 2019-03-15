@@ -16,6 +16,7 @@ Devpost: https://devpost.com/software/twitcher
 - [ ] Tweak GUI - slide transitions
 - [ ] strip @'s
 - [ ] in live link, link GitHub  and/or Devpost
+- [ ] backround & music - bugs & portability 
 
 ### Back End
 - [ ] Complete The Tweet tweaks - urls, no synonyms
