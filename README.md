@@ -8,3 +8,13 @@ Devpost: https://devpost.com/software/twitcher
 ### Modes:
   1. Guess who?
   2. Fill in the blanks!!!
+
+## TODO
+
+### Front End
+- [ ] Refacotring JavaScript
+- [ ] Tweak GUI - slide transitions
+- [ ] strip @'s
+
+### Back End
+- [ ] Complete The Tweet tweaks - urls, no synonyms
