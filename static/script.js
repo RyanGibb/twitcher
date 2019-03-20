@@ -5,7 +5,7 @@
 //                              WebSocket Client
 //----------------------------------------------------------------------------
 
-const wsUrl = 'wss://' + location.hostname+ ":"+location.port+ '/twitcher/';
+const wsUrl = 'wss://' + location.hostname+ ":"+location.port+ '/';
 const ws = new WebSocket(wsUrl);
 
 ws.onopen = function() {
