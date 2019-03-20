@@ -105,10 +105,9 @@ const static_dir = 'static';
 app.use(express.static(static_dir));
 
 const httpServer = http.createServer(app);
-const localhost = '127.0.0.1';
 
-httpServer.listen(port, localhost, function() {
-  console.log('Listening for HTTP requests on localhost, port ' + port);
+httpServer.listen(port, function() {
+  console.log('Listening for HTTP requests on port ' + port);
 });
 
 //----------------------------------------------------------------------------
