@@ -1,126 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Twitcher</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script></head>
-    <script src="script.js" ></script>
-    <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
-    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
-<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/press-start-2p" type="text/css"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <title>Twitcher</title>
+</head>
+<script src="script.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+<link href="https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/press-start-2p" type="text/css" />
 
-<body class="backgroundDiv" >
+<body class="backgroundDiv">
 
+  <h1 style="text-align: center;font-family: PressStart2PRegular">Twitcher </h1>
 
-    <h1 style="text-align: center;font-family: PressStart2PRegular" >Twitcher </h1>
-
-<div id="FirstPage">
-<div style="margin: auto; text-align: center" class="center" >
-    <div style="text-align: center">
-    <p style="height: 5%"> Click To Change Game Mode </p>
-    <div  class="flipswitch">
-        <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
-        <label class="flipswitch-label" for="fs">
+  <div id="FirstPage">
+    <div style="margin: auto; text-align: center" class="center">
+      <div style="text-align: center">
+        <p style="height: 5%"> Click To Change Game Mode </p>
+        <div class="flipswitch">
+          <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
+          <label class="flipswitch-label" for="fs">
             <div class="flipswitch-inner"></div>
-        </label>
+          </label>
+        </div>
+      </div>
+      <p style="height: 5%"> </p>
+      <h3>Add Twitter Account</h3>
+      <p style="height: 5%"> </p>
+      <input type="text" id="twitterAccount" name="twitterAccount" placeholder="Twitter  Account.." style="width: 75%"><input type="submit" value="Submit" onclick="checkUsername()">
     </div>
-    </div>
-    <p style="height: 5%"> </p>
-    <h3>Add Twitter Account</h3>
-    <p style="height: 5%"> </p>
-    <input type="text" id="twitterAccount" name="twitterAccount" placeholder="Twitter  Account.." style="width: 75%"><input type="submit" value="Submit"  onclick="checkUsername()" >
-</div>
     <div id="UserListTotal" style="display: none">
-<h2 style="text-align: center"> Twitter Accounts</h2>
-<table id="UserList" class="table table-dark center" style="width: 30%;display: none" >
+      <h2 style="text-align: center"> Twitter Accounts</h2>
+      <table id="UserList" class="table table-dark center" style="width: 30%;display: none">
 
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Twitter Account</th>
-        <th scope="col">Number of Tweets</th>
-        <th scope="col">Followers</th>
-        <th scope="col">Remove</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Twitter Account</th>
+            <th scope="col">Number of Tweets</th>
+            <th scope="col">Followers</th>
+            <th scope="col">Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
-<div class="center" style="; text-align: center">
+    <div class="center" style="; text-align: center">
 
-        <button id="playButton" disabled class="button" style="left: 50%" onclick="play()">Play</button>
-        <p id="infoText" >Please add at least 2 twitter accounts to play </p>
-</div>
+      <button id="playButton" disabled class="button" style="left: 50%" onclick="play()">Play</button>
+      <p id="infoText">Please add at least 2 twitter accounts to play </p>
+    </div>
     <div style="text-align: center;">
-    <img  src="twitcher.png">
+      <img src="logo2.png">
     </div>
-</div>
-<div id="SecondPage" style="display: none">
+  </div>
+  <div id="SecondPage" style="display: none">
     <h2 style="text-align: center" id="mode-title">Guess Who?</h2>
     <div id="question" class="questionAnimation">
-    <ul class="timeline">
+      <ul class="timeline">
         <li>
-            <div class="avatar">
-                <img src="twitcher.jpg" id="avatar">
-                <div class="hover">
-                    <div class="icon-twitter"></div>
-                </div>
+          <div class="avatar">
+            <img src="logo1.jpg" id="avatar">
+            <div class="hover">
+              <div class="icon-twitter"></div>
             </div>
-            <div class="bubble-container">
-                <div class="bubble">
-                    <div class="retweet" >
-                        <p id="date">Date here</p>
-                    </div>
-                    <h3 id="handle">@?????</h3>
-                    <p id="TweetText"></p>
-                    <!--<div class="over-bubble">-->
-                        <!--<div class="icon-mail-reply action"></div>-->
-                        <!--<div class="icon-retweet action"></div>-->
-                        <!--<div class="icon-star"></div>-->
-                    <!--</div>-->
-                </div>
+          </div>
+          <div class="bubble-container">
+            <div class="bubble">
+              <div class="retweet">
+                <p id="date">Date here</p>
+              </div>
+              <h3 id="handle">@?????</h3>
+              <p id="TweetText"></p>
+              <!--<div class="over-bubble">-->
+              <!--<div class="icon-mail-reply action"></div>-->
+              <!--<div class="icon-retweet action"></div>-->
+              <!--<div class="icon-star"></div>-->
+              <!--</div>-->
+            </div>
 
-                <div class="arrow"></div>
-            </div>
+            <div class="arrow"></div>
+          </div>
         </li>
 
-    </ul>
-    <div id="answerButtons" style="text-align: center">
-    <button class="button2">hey</button>
-    <button class="button2">hey</button>
+      </ul>
+      <div id="answerButtons" style="text-align: center">
+        <button class="button2">hey</button>
+        <button class="button2">hey</button>
+      </div>
     </div>
-    </div>
-</div>
-    <div class="bird-container bird-container--one">
-        <div class="bird bird--one"></div>
-    </div>
+  </div>
+  <div class="bird-container bird-container--one">
+    <div class="bird bird--one"></div>
+  </div>
 
-    <div class="bird-container bird-container--two">
-        <div class="bird bird--two"></div>
-    </div>
+  <div class="bird-container bird-container--two">
+    <div class="bird bird--two"></div>
+  </div>
 
-    <div class="bird-container bird-container--three">
-        <div class="bird bird--three"></div>
-    </div>
+  <div class="bird-container bird-container--three">
+    <div class="bird bird--three"></div>
+  </div>
 
-    <div class="bird-container bird-container--four">
-        <div class="bird bird--four"></div>
-    </div>
-    <!--<audio controls autoplay loop style="display: none">-->
-        <!--<source src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" type="audio/mp3">-->
+  <div class="bird-container bird-container--four">
+    <div class="bird bird--four"></div>
+  </div>
+  <!--<audio controls autoplay loop style="display: none">-->
+  <!--<source src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" type="audio/mp3">-->
 
-    <!--</audio>-->
-    <iframe src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
-    <audio id="player" autoplay loop>
-        <source src="audio/source.mp3" type="audio/mp3">
-    </audio>
+  <!--</audio>-->
+  <iframe src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
+  <audio id="player" autoplay loop>
+    <source src="audio/source.mp3" type="audio/mp3">
+  </audio>
 
 </body>
+
 </html>
