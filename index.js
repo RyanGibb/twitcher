@@ -97,10 +97,7 @@ function getUser(handle, callback) {
 const express = require('express');
 const http = require('http');
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 8080;
-}
+var port = process.env.PORT || 8080;
 
 const app = express();
 const static_dir = 'static';
