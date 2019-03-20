@@ -5,12 +5,12 @@ require("dotenv").config();
 //                              Twitter API
 //----------------------------------------------------------------------------
 
-var Twitter = require('twitter');
-var tcom = require('thesaurus-com');
+const Twitter = require('twitter');
+const tcom = require('thesaurus-com');
 const WordPOS = require('wordpos');
-var wordpos = new WordPOS();
+const wordpos = new WordPOS();
 
-var client = new Twitter({
+const client = new Twitter({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
   access_token_key: process.env.ACCESS_TOKEN_KEY,
@@ -99,7 +99,7 @@ function getUser(handle, callback) {
 const express = require('express');
 const http = require('http');
 
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 const app = express();
 const static_dir = 'static';
@@ -194,12 +194,8 @@ function respondError(ws, req, human_readable_error, error) {
   respond(ws, req, responseMessage);
 }
 
-
-
 function respond(ws, req, responseMessage) {
   var messageString = JSON.stringify(responseMessage);
   ws.send(messageString);
   console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
 };
-
-console.log('WebSocket server running');
