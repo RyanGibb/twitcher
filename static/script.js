@@ -5,32 +5,38 @@
 //                              WebSocket Client
 //----------------------------------------------------------------------------
 
-const wsUrl = 'wss://' + location.hostname+ ":"+location.port+ '/';
-const ws = new WebSocket(wsUrl);
+var ws;
 
-ws.onopen = function() {
-  //do something
+function wsConnect() {
+  ws = new WebSocket( (location.protocol.match(/^https/) ? "wss" : "ws") +
+                      '://' + location.hostname + ":" + location.port);
+
+  ws.onopen = function() {
+    //do something
+  }
+
+  ws.onclose = function() {
+    alert("WebSocket closed. Please reload the page.");
+  }
+
+  ws.onerrer = function(e) {
+    alert("WebSocket Error: " + e + ". Please reload the page.");
+  }
+
+  ws.onmessage = function(m) {
+    let messageString = m.data;
+    console.log("<- rx " + messageString);
+    let message = JSON.parse(messageString);
+    handleMessageWS(message);
+  }
 }
 
-ws.onclose = function() {
-  alert("WebSocket closed. Please reload the page.");
-}
-
-ws.onerrer = function(e) {
-  alert("WebSocket Error: " + e + ". Please reload the page.");
-}
-
-ws.onmessage = function(m) {
-  let messageString = m.data;
-  console.log("<- rx " + messageString);
-  let message = JSON.parse(messageString);
-  handleMessage(message);
-}
-
-function sendMessage(messageString) {
+function sendMessageWS(messageString) {
   console.log("-> tx " + messageString);
   ws.send(messageString);
 }
+
+wsConnect();
 
 //----------------------------------------------------------------------------
 //                              HTML Manipulation
@@ -40,7 +46,7 @@ function checkUsername() {
     let handle = document.getElementById("twitterAccount").value;
     let request = "userinfo"
     let message = {request, handle};
-    sendMessage(JSON.stringify(message));
+    sendMessageWS(JSON.stringify(message));
 }
 
 var handles = [];
@@ -126,7 +132,7 @@ function refreshTable(){
 }
 
 let answer = ""
-function handleMessage(obj) {
+function handleMessageWS(obj) {
     if (obj.response === "blank") {
         let tweetText= document.getElementById("TweetText")
         console.log(obj.recent_tweets)
@@ -232,7 +238,7 @@ function guess(){
      let handle= handles[rnd]
     let message = {request,handle };
     console.log(message)
-    sendMessage(JSON.stringify(message));
+    sendMessageWS(JSON.stringify(message));
 }
 function getQuestion(){
     guess()
@@ -257,7 +263,7 @@ function answerQuestion(userAnswer,btn) {
         $("#question").delay(300).animate({width:'toggle'},700);
 
         setTimeout(function() {
-            profilePic.src = "twitcher.jpg";
+            profilePic.src = "logo1.jpg";
             name.style.color = "black";
             name.innerHTML = "@?????";
           }, 2000);
