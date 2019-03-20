@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/RyanGibb/twitcher#readme",
   "dependencies": {
+    "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "request": "^2.88.0",

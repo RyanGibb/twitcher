@@ -1,4 +1,6 @@
 
+require("dotenv").config();
+
 //----------------------------------------------------------------------------
 //                              Twitter API
 //----------------------------------------------------------------------------
@@ -9,10 +11,10 @@ const WordPOS = require('wordpos');
 var wordpos = new WordPOS();
 
 var client = new Twitter({
-  consumer_key: '2VrVCTagv7YKqAYwERrhSAwqy',
-  consumer_secret: 'q9oWZFamxgK7jTmB1Gc8Y4SKtPr6Tjn4etFYuM9iST5jEgcfhe',
-  access_token_key: '1101853152939257856-Hsoh6KAbgZXwn6jA4XjKSu0cCgNQNt',
-  access_token_secret: '8z20GXZMAQnt2zA5q0n7V6Hs2Su9hFALOugeXRKAux733'
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
 function getBlankedTweets(handle, callback){
