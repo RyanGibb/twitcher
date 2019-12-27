@@ -103,104 +103,53 @@ async function getUser(handle) {
 // HTTP Server
 
 const express = require('express');
-const http = require('http');
-
 const port = process.env.PORT || 8080;
-
 const app = express();
 const static_dir = 'static';
 
+app.use(express.urlencoded())
 app.use(express.static(static_dir));
 
-const httpServer = http.createServer(app);
+app.post('/userinfo', async (req, res) => {
+  transmissionLog('userinfo -> rx ' + JSON.stringify(req.body))
+  let handle = req.body.handle;
+  if (!handle) {
+    console.log('Missing handle for userinfo request')
+    res.status(500).json({ error: 'Missing handle for userinfo request' });
+    return;
+  }
+  try {
+    let user = await getUser(handle);
+    res.json(user);
+  } catch(error) {
+    console.log(error)
+    res.status(500).json({ error });
+  }
+});
 
-httpServer.listen(port, function() {
+app.post('blank', async (req, res) => {
+  transmissionLog('blank -> rx ' + JSON.stringify(req.body))
+  let handle = req.body.handle;
+  if(!handle) {
+    console.log('Missing handle for userinfo request')
+    res.status(500).json({ error: 'Missing handle for userinfo request' });
+    return;
+  }
+  try {
+    let recent_tweets = await getBlankedTweets(handle);
+    res.json(recent_tweets)
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ error: 'Error getting tweets' });
+  }
+});
+
+app.listen(port, () => {
   console.log('Listening for HTTP requests on port ' + port);
 });
 
-// WebSocket Server
+const maxTransmitionLogLength = 200;
 
-const ws = require('ws');
-
-const maxLogMessageLength = 200;
-
-const wsServer = new ws.Server({
-  server: httpServer
-});
-
-wsServer.on('connection', function(ws, req) {
-  console.log('WS connection');
-
-  ws.on('close', function(code, message) {
-    console.log('WS disconnection - Code ' + code);
-  });
-
-  ws.on('message', async function(data) {
-    let messageString = data.toString();
-    console.log('WS -> rx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
-
-    try {
-      var receivedMessage = JSON.parse(messageString);
-    } catch(error) {
-      console.log(error)
-      return respondError(ws, req, 'Error parsing JSON request');
-    }
-
-    if (receivedMessage.request == 'userinfo') {
-      let handle = receivedMessage.handle;
-      if (!handle) {
-        return respondError(ws, req, 'Missing handle for userinfo request');
-      }
-      // query api
-      try {
-        var user = await getUser(handle);
-      } catch(error) {
-        console.log(error)
-        return respondError(ws, req, error);
-      }
-      let response = "userinfo";
-      let message = {
-        response,
-        user
-      };
-      respond(ws, req, message);
-    }
-
-    else if (receivedMessage.request == 'blank') {
-      let handle = receivedMessage.handle;
-      if(!handle) {
-        return respondError(ws, req, 'Missing handle for blank request');
-      }
-      // query api
-      try {
-        var recent_tweets = await getBlankedTweets(handle);
-      } catch(error) {
-        console.log(error)
-        return respondError(ws, req, "Error getting tweets");
-      }
-      let response = "blank";
-      let message = {response, recent_tweets};
-      respond(ws, req, message);
-    }
-
-    else {
-      respondError(ws, req, 'Unsupported request "' + receivedMessage.request + '"');
-    }
-
-  })
-});
-
-function respondError(ws, req, error) {
-  let response = 'error';
-  responseMessage = {
-    response,
-    error
-  };
-  respond(ws, req, responseMessage);
+function transmissionLog(message){
+  console.log((message.length > maxTransmitionLogLength ? message.slice(0, maxTransmitionLogLength) + "..." : message));
 }
-
-function respond(ws, req, responseMessage) {
-  var messageString = JSON.stringify(responseMessage);
-  ws.send(messageString);
-  console.log('WS <- tx ' + (messageString.length > maxLogMessageLength ? messageString.slice(0, maxLogMessageLength) + "..." : messageString));
-};
