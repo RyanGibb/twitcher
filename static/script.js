@@ -95,15 +95,16 @@ async function guessWho() {
     }
     document.getElementById('mode-title').innerHTML = 'Guess Who?'
     if (!await getTweets('/recentTweets')) { return }
-    displayTweet = (tweet) => {
+    displayTweet = (tweet_handle, tweet) => {
         document.getElementById('TweetText').innerText = tweet.body
         document.getElementById('date').innerText = tweet.timestamp
-        answer = tweet.handle
+        correct_handle = tweet_handle
+        correct_answer = tweet_handle
         let buttons = document.getElementById('answerButtons')
         buttons.innerHTML = ''
         for (const handle in users) {
             var btn = document.createElement('BUTTON') 
-            var text = document.createTextNode(handle)
+            var text = document.createTextNode('@' + handle)
             btn.appendChild(text)
             document.body.appendChild(btn)
             btn.classList.toggle('button2')
@@ -117,10 +118,11 @@ async function guessWho() {
 async function completeTheTweet() {
     document.getElementById('mode-title').innerHTML = 'Complete The Tweet!!!'
     if (!await getTweets('/recentTweetsBlanked')) { return }
-    displayTweet = (tweet) => {
-        answer = tweet.word
+    displayTweet = (tweet_handle, tweet) => {
+        correct_handle = tweet_handle
+        correct_answer = tweet.word
         let tweetText = document.getElementById('TweetText')
-        tweetText.innerText = tweet.body.replace(answer, '-----')
+        tweetText.innerText = tweet.body.replace(correct_answer, '-----')
         let buttons = document.getElementById('answerButtons')
         buttons.innerHTML = ''
         let words
@@ -134,7 +136,7 @@ async function completeTheTweet() {
         }else {
             words = words.concat(tweet.possibilities.antonyms.slice(0, tweet.possibilities.antonyms.length))
         }
-        words = words.concat(answer)
+        words = words.concat(correct_answer)
         words.forEach(word => {
             var btn = document.createElement('BUTTON')
             var t = document.createTextNode(word)
@@ -159,19 +161,20 @@ function chooseTweet(){
     }
     const index = Math.floor(Math.random() * tweets[handle].length)
     let tweet = tweets[handle][index]
-    displayTweet(tweet)
+    displayTweet(handle, tweet)
     tweets[handle].splice(index, 1)
 }
 
-var answer = ''
+var correct_answer = ''
+var correct_handle = ''
 function processAnswer(input_answer, btn) {
-    if (answer === input_answer) {
+    if (correct_answer === input_answer) {
         btn.classList.toggle('button')
         let name = document.getElementById('handle')
-        name.innerHTML = '@'+answer
+        name.innerHTML = '@' + correct_handle
         name.style.color = 'green'
         let profilePic = document.getElementById('avatar')
-        profilePic.src = users[answer].profile_image_url
+        profilePic.src = users[correct_handle].profile_image_url
         $('#question').delay(1500).animate({width:'toggle'},500)
         $('#question').delay(300).animate({width:'toggle'},700)
         setTimeout(() => {
