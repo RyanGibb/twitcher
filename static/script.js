@@ -1,86 +1,42 @@
 
-"use strict";
-
-//----------------------------------------------------------------------------
-//                              WebSocket Client
-//----------------------------------------------------------------------------
-
-var ws;
-
-function wsConnect() {
-  ws = new WebSocket( (location.protocol.match(/^https/) ? "wss" : "ws") +
-                      '://' + location.hostname + ":" + location.port);
-
-  ws.onopen = function() {
-    //do something
-  }
-
-  ws.onclose = function() {
-    alert("WebSocket closed. Please reload the page.");
-  }
-
-  ws.onerrer = function(e) {
-    alert("WebSocket Error: " + e + ". Please reload the page.");
-  }
-
-  ws.onmessage = function(m) {
-    let messageString = m.data;
-    console.log("<- rx " + messageString);
-    let message = JSON.parse(messageString);
-    handleMessageWS(message);
-  }
-}
-
-function sendMessageWS(messageString) {
-  console.log("-> tx " + messageString);
-  ws.send(messageString);
-}
-
-wsConnect();
-
-//----------------------------------------------------------------------------
-//                              HTML Manipulation
-//----------------------------------------------------------------------------
-
-function checkUsername() {
-    let handle = document.getElementById("twitterAccount").value;
-    let request = "userinfo"
-    let message = {request, handle};
-    sendMessageWS(JSON.stringify(message));
-}
-
-var handles = [];
-var dictTweetCount = [];
-var dictFollowerCount = [];
-var dictProfilePicUrl = [];
-function addHandle(handle, tweetCount, followerCount, tweets, profile_pic_url) {
-    if(tweetCount > 0){
-    var index = handles.indexOf(handle);
-    console.log(index)
-    if(index < 0) {
-        dictTweetCount[handle] = tweetCount
-        dictFollowerCount[handle] = followerCount
-        dictProfilePicUrl[handle] = profile_pic_url
-        handles.push(handle)
-        addJson(handle,tweets)
-        refreshTable()
-
-    }else {
-        window.alert("User already exist");
-    }}else{
-        window.alert("The user has no tweets");
+async function post(url, data) {
+    console.log("-> tx ", data)
+    let res = await fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    let recieved_data = await res.json()
+    console.log("<- rx ", recieved_data)
+    if (!res.ok) {
+        console.log("Recieved error.")
+        throw recieved_data
     }
+    return recieved_data
 }
 
-function removeHandle(handle){
+var users = []
+const minUsers = 2
 
-    console.log(handles)
-    var index = handles.indexOf(handle);
-    if (index > -1) {
-        handles.splice(index, 1);
+async function addUser() {
+    let handle = document.getElementById("twitterAccount").value
+    let user = await post("/userinfo", {handle})
+    if (user.recent_tweets <= 0) {
+        window.alert(handle + ' has no recent tweets')
+        return
     }
-// array = [2, 9]
-    console.log(handles);
+    if (users.some(u => u.handle === handle)) {
+        window.alert("User already exist")
+        return
+    }
+    users.push(user)
+    refreshTable()
+}
+
+function removeUser(handle){
+    users.splice(users.findIndex(user => user.handle === handle))
     refreshTable()
 }
 
@@ -89,242 +45,156 @@ function refreshTable(){
     let tabledisplay = document.getElementById("UserListTotal")
     let infoText = document.getElementById("infoText")
     let playButton = document.getElementById("playButton")
-    if(handles.length == 0){
+    if (users.length == 0) {
         table.style.display = "none"
         tabledisplay.style.display = "none"
-    }else {
+    } else {
         table.style.display = ""
         tabledisplay.style.display = ""
     }
-    if(handles.length < 2 ){
+    if (users.length < minUsers) {
         infoText.style.display = ""
-        playButton.disabled = true;
-    }else{
+        playButton.disabled = true
+    } else{
         infoText.style.display = "none"
-        playButton.disabled = false;
+        playButton.disabled = false
     }
-
-
     let old_tbody = table.getElementsByTagName('tbody')
-    var new_tbody = document.createElement('tbody');
+    var new_tbody = document.createElement('tbody')
     let count = 1
-    handles.forEach(function(element) {
-
-        let row = new_tbody.insertRow(0);
-        let cell0 = row.insertCell(0);
-        let cell1 = row.insertCell(1);
-        let cell2 = row.insertCell(2);
-        let cell3 = row.insertCell(3);
-        let cell4 = row.insertCell(4);
-        console.log(dictTweetCount)
-        console.log(dictFollowerCount)
-        console.log(dictTweetCount[element])
-        cell0.innerHTML = count;
-        cell1.innerHTML = element;
-        cell2.innerHTML = dictTweetCount[element];
-        cell3.innerHTML = dictFollowerCount[element];
-        cell4.innerHTML = "<button class=\"deleteButton\"  onclick='removeHandle(\"" + element + "\")'>Delete</button>";
+    users.forEach(user => {
+        let row = new_tbody.insertRow(0)
+        let cell0 = row.insertCell(0)
+        let cell1 = row.insertCell(1)
+        let cell2 = row.insertCell(2)
+        let cell3 = row.insertCell(3)
+        let cell4 = row.insertCell(4)
+        cell0.innerHTML = count
+        cell1.innerHTML = user.handle
+        cell2.innerHTML = user.tweet_count
+        cell3.innerHTML = user.follower_count
+        cell4.innerHTML = "<button class=\"deleteButton\"  onclick='removeUser(\"" + user.handle + "\")'>Delete</button>"
         count++
-    });
-    console.log(new_tbody)
-    console.log(old_tbody)
+    })
     table.replaceChild(new_tbody, old_tbody[0])
 }
 
-let answer = ""
-function handleMessageWS(obj) {
-    if (obj.response === "blank") {
-        let tweetText= document.getElementById("TweetText")
-        console.log(obj.recent_tweets)
-        let theTweet = obj.recent_tweets[Math.floor(Math.random()*obj.recent_tweets.length)];
-
-        console.log("quess start")
-        console.log(theTweet.handle)
-        answer = theTweet.word
-        tweetText.innerText = theTweet.body.replace(answer,"-----")
-        console.log(answer)
-        let buttons  = document.getElementById("answerButtons")
-        buttons.innerHTML = ""
-        let words
-        if(theTweet.possibilities.synonyms.length > 3) {
-           words = theTweet.possibilities.synonyms.slice(0, 3)
-        }else{
-            words = theTweet.possibilities.synonyms.slice(0, theTweet.possibilities.synonyms.length)
-        }
-        console.log(words)
-        if(theTweet.possibilities.antonyms.length > 3) {
-            words = words.concat(theTweet.possibilities.antonyms.slice(0, 3))
-        }else {
-            words = words.concat(theTweet.possibilities.antonyms.slice(0, theTweet.possibilities.antonyms.length))
-        }
-
-        console.log(words)
-        words = words.concat(answer)
-        console.log("words coming")
-        console.log(words)
-        words.forEach(function (element) {
-            var btn = document.createElement("BUTTON");        // Create a <button> element
-            var t = document.createTextNode(element);       // Create a text node
-            btn.appendChild(t);                                // Append the text to <button>
-            document.body.appendChild(btn);
-            btn.classList.toggle("button2");
-            btn.onclick = function(){
-                answerQuestion(element,btn)
-            };
-            buttons.appendChild(btn)
-        })
-        document.getElementById("date").innerText = theTweet.timestamp
-    }
-    /**----------------------------------------------**/
-    else if (obj.response === "userinfo") {
-
-
-            console.log("correct")
-            let handle = document.getElementById("twitterAccount").value;
-            console.log(handle)
-            console.log(obj)
-            let tweets = obj.user.recent_tweets
-            addHandle(handle, obj.user.tweet_count,obj.user.follower_count,tweets, obj.user.profile_pic_url)
-
-
-    }
-    else if (obj.response === "error") {
-        console.log(obj.error)
-        window.alert(obj.human_readable_error);
-    }
-}
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
 function play() {
-
+    document.getElementById("FirstPage").style.display = "none"
+    document.getElementById("SecondPage").style.display = ""
     if(document.getElementById("fs").checked) {
-        if (handles.length > 1) {
-            document.getElementById("FirstPage").style.display = "none";
-            document.getElementById("SecondPage").style.display = "";
-            document.getElementById("mode-title").innerHTML = "Guess Who?"
-            //getQuestion()
-            chooseRandom()
-        } else {
-            window.alert("You need to add at least 2 twitter accounts");
-        }
+        guessWho()
     }
     else{
-        document.getElementById("FirstPage").style.display = "none";
-        document.getElementById("SecondPage").style.display = "";
-        document.getElementById("mode-title").innerHTML = "Complete The Tweet!!!"
-        getQuestion()
+        completeTheTweet()
     }
-
 }
-function guess(){
-    let rnd = Math.floor(Math.random() * handles.length);
-    let request = "blank"
-     let handle= handles[rnd]
-    let message = {request,handle };
-    console.log(message)
-    sendMessageWS(JSON.stringify(message));
-}
-function getQuestion(){
-    guess()
 
-
-}
-function answerQuestion(userAnswer,btn) {
-    if(answer === userAnswer ){
-
-        let guessWho = document.getElementById("fs").checked;
-
-        btn.classList.toggle("button");
-        let name = document.getElementById("handle");
-
-        name.innerHTML = "@"+answer;
-        name.style.color = "green";
-        let profilePic = document.getElementById("avatar");
-        profilePic.src = dictProfilePicUrl[answer];
-
-        //guess()
-        $("#question").delay(1500).animate({width:'toggle'},500);
-        $("#question").delay(300).animate({width:'toggle'},700);
+var answer = ""
+function processAnswer(input_answer, btn) {
+    if (answer === input_answer) {
+        btn.classList.toggle("button")
+        let name = document.getElementById("handle")
+        name.innerHTML = "@"+answer
+        name.style.color = "green"
+        let user = users.find(user => user.handle === answer);
+        let profilePic = document.getElementById("avatar")
+        profilePic.src = user.profile_pic_url
+        $("#question").delay(1500).animate({width:'toggle'},500)
+        $("#question").delay(300).animate({width:'toggle'},700)
 
         setTimeout(function() {
-            profilePic.src = "logo1.jpg";
-            name.style.color = "black";
-            name.innerHTML = "@?????";
-          }, 2000);
-
-        setTimeout(function() {
-          if(guessWho) {
-            chooseRandom()
+            profilePic.src = "resources/logo1.jpg"
+            name.style.color = "black"
+            name.innerHTML = "@?????"
+          }, 2000)
+        
+        let guessWho = document.getElementById("fs").checked
+        setTimeout(() => {
+          if (guessWho) {
+            chooseTweet()
           }
           else {
-            getQuestion()
+            choseBlankedTweet()
           }
-        }, 2000);
+        }, 2000)
+    } else{
+        btn.classList.add("deleteButton","drop")
+        btn.onclick = () => {}
+    }
+}
+
+function guessWho() {
+    if (users.length <= 1) {
+        window.alert("You need to add at least 2 twitter handles")
+        return
+    }
+    document.getElementById("mode-title").innerHTML = "Guess Who?"
+    chooseTweet()
+}
+
+function chooseTweet(){
+    const userIndex = Math.floor(Math.random() * users.length)
+    const user = users[userIndex]
+    if (user.recent_tweets.length < 1) {
+        alert(user.handle + " has no more tweets.")
+        location.reload()
+        return
+    }
+    const tweetIndex = Math.floor(Math.random() * user.recent_tweets.length)
+    let tweet = user.recent_tweets[tweetIndex]
+    document.getElementById("TweetText").innerText = tweet.body
+    document.getElementById("date").innerText = tweet.timestamp
+    answer = tweet.handle
+    let buttons  = document.getElementById("answerButtons")
+    buttons.innerHTML = ""
+    users.forEach(user => {
+        var btn = document.createElement("BUTTON") 
+        var text = document.createTextNode(user.handle)
+        btn.appendChild(text)
+        document.body.appendChild(btn)
+        btn.classList.toggle("button2")
+        btn.onclick = () => processAnswer(user.handle, btn)
+        buttons.appendChild(btn)
+    })
+    users[userIndex].recent_tweets.splice(tweetIndex, 1)
+}
+
+function completeTheTweet() {
+    document.getElementById("mode-title").innerHTML = "Complete The Tweet!!!"
+    choseBlankedTweet()
+}
+
+async function choseBlankedTweet() {
+    // TODO save blanked tweets by user when playing complete the tweet
+    let user = users[Math.floor(Math.random() * users.length)]
+    let recent_tweets = await post("/blank", {"handle": user.handle})
+    let tweet = recent_tweets[Math.floor(Math.random() * recent_tweets.length)]
+    answer = tweet.word
+    let tweetText = document.getElementById("TweetText")
+    tweetText.innerText = tweet.body.replace(answer, "-----")
+    let buttons = document.getElementById("answerButtons")
+    buttons.innerHTML = ""
+    let words
+    if(tweet.possibilities.synonyms.length > 3) {
+        words = tweet.possibilities.synonyms.slice(0, 3)
     }else{
-        btn.classList.add("deleteButton","drop");
-        btn.onclick = function(){
-        };
+        words = tweet.possibilities.synonyms.slice(0, tweet.possibilities.synonyms.length)
     }
-
-}
-
-let dictTweets = []
-function addJson(handler,tweets){
-    dictTweets[handler] = tweets
-}
-let errorCount = 0
-function chooseRandom(){
-    let rnd = Math.floor(Math.random() * handles.length);
-    if(dictTweets[handles[rnd]].length > 0){
-        let rnd2 = Math.floor(Math.random() * dictTweets[handles[rnd]].length)
-        let tweet = dictTweets[handles[rnd]][rnd2]
-        let tweetText= document.getElementById("TweetText")
-        tweetText.innerText = tweet.body
-        console.log("quess start")
-        console.log(tweet.handle)
-        answer = tweet.handle
-        console.log(answer)
-        let buttons  = document.getElementById("answerButtons")
-        buttons.innerHTML = ""
-        handles.forEach(function (element) {
-            var btn = document.createElement("BUTTON");        // Create a <button> element
-            var t = document.createTextNode(element);       // Create a text node
-            btn.appendChild(t);                                // Append the text to <button>
-            document.body.appendChild(btn);
-            btn.classList.toggle("button2");
-            btn.onclick = function(){
-                answerQuestion(element,btn)
-            };
-            buttons.appendChild(btn)
-        })
-        document.getElementById("date").innerText = tweet.timestamp
-        var index = rnd2
-        if (index > -1) {
-            dictTweets[handles[rnd]].splice(index, 1);
-        }
+    if(tweet.possibilities.antonyms.length > 3) {
+        words = words.concat(tweet.possibilities.antonyms.slice(0, 3))
+    }else {
+        words = words.concat(tweet.possibilities.antonyms.slice(0, tweet.possibilities.antonyms.length))
     }
-    else if(errorCount > 100){
-        alert("sorry but all of the tweets finished")
-        location.reload();
-    }
-    else{
-        errorCount++
-        chooseRandom()
-    }
+    words = words.concat(answer)
+    words.forEach(word => {
+        var btn = document.createElement("BUTTON")
+        var t = document.createTextNode(word)
+        btn.appendChild(t)
+        document.body.appendChild(btn)
+        btn.classList.toggle("button2")
+        btn.onclick = () => processAnswer(word, btn)
+        buttons.appendChild(btn)
+    })
+    document.getElementById("date").innerText = tweet.timestamp
 }

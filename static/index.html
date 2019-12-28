@@ -34,7 +34,7 @@
       <p style="height: 5%"> </p>
       <h3>Add Twitter Account</h3>
       <p style="height: 5%"> </p>
-      <input type="text" id="twitterAccount" name="twitterAccount" placeholder="Twitter  Account.." style="width: 75%"><input type="submit" value="Submit" onclick="checkUsername()">
+      <input type="text" id="twitterAccount" name="twitterAccount" placeholder="Twitter  Account.." style="width: 75%"><input type="submit" value="Submit" onclick="addUser()">
     </div>
     <div id="UserListTotal" style="display: none">
       <h2 style="text-align: center"> Twitter Accounts</h2>
@@ -54,12 +54,11 @@
       </table>
     </div>
     <div class="center" style="; text-align: center">
-
       <button id="playButton" disabled class="button" style="left: 50%" onclick="play()">Play</button>
       <p id="infoText">Please add at least 2 twitter accounts to play </p>
     </div>
     <div style="text-align: center;">
-      <img src="logo2.png">
+      <img src="resources/logo2.png">
     </div>
   </div>
   <div id="SecondPage" style="display: none">
@@ -68,7 +67,7 @@
       <ul class="timeline">
         <li>
           <div class="avatar">
-            <img src="logo1.jpg" id="avatar">
+            <img src="resources/logo1.jpg" id="avatar">
             <div class="hover">
               <div class="icon-twitter"></div>
             </div>
@@ -117,10 +116,7 @@
   <!--<source src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" type="audio/mp3">-->
 
   <!--</audio>-->
-  <iframe src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
-  <audio id="player" autoplay loop>
-    <source src="audio/source.mp3" type="audio/mp3">
-  </audio>
+  <iframe src="resources/music.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
 
 </body>
 
