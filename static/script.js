@@ -12,7 +12,8 @@ async function post(url, data) {
     let recieved_data = await res.json()
     console.log('<- rx ', recieved_data)
     if (!res.ok) {
-        throw recieved_data
+        alert(recieved_data.error)
+        throw recieved_data.error
     }
     return recieved_data
 }
