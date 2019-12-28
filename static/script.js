@@ -150,7 +150,8 @@ async function completeTheTweet() {
 }
 
 function chooseTweet(){
-    const handle = randomHandle()
+    var handles = Object.keys(users)
+    const handle = handles[handles.length * Math.random() << 0];
     if (tweets[handle].length < 1) {
         alert(handle + ' has no more tweets.')
         location.reload()
@@ -198,11 +199,6 @@ async function getTweets(url) {
         }
     }
     return ok
-}
-
-function randomHandle() {
-    var handles = Object.keys(users)
-    return handles[handles.length * Math.random() << 0];
 }
 
 function setup() {
