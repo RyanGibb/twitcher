@@ -112,11 +112,10 @@
   <div class="bird-container bird-container--four">
     <div class="bird bird--four"></div>
   </div>
-  <!--<audio controls autoplay loop style="display: none">-->
-  <!--<source src="8-Bit Music  City In The Clouds  Ambient 8-Bit Relax  Study Music.mp3" type="audio/mp3">-->
-
-  <!--</audio>-->
-  <iframe src="resources/music.mp3" allow="autoplay" id="audio" style="display:none"></iframe>
+  <audio loop id="audio">
+    <source src="resources/music.mp3" type="audio/mp3">
+  </audio>
+  <img onclick="changeVolume()" id="audio_icon">
 
 </body>
 

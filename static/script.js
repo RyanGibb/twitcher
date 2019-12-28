@@ -198,3 +198,24 @@ async function choseBlankedTweet() {
     })
     document.getElementById("date").innerText = tweet.timestamp
 }
+
+function setup() {
+    var audio = document.getElementById("audio")
+    changeVolume()
+    audio.play()
+}
+
+var volume = 0
+var maxVolume = 4
+function changeVolume() {
+    volume = (volume + 1) % maxVolume
+    fractionalVolume = 1 - log(maxVolume - volume, maxVolume)
+    var audio = document.getElementById("audio")
+    audio.volume = fractionalVolume
+    var audio_icon = document.getElementById("audio_icon")
+    audio_icon.src = 'resources/volume' + volume + '.png'
+}
+
+function log(val, base) {
+    return Math.log(val) / Math.log(base);
+}
