@@ -1,4 +1,4 @@
-# Twitcher <img align="right" width="150" height="150" src="https://github.com/RyanGibb/twitcher/blob/master/static/logo3.jpg">  
+# Twitcher <img align="right" width="150" height="150" src="https://github.com/RyanGibb/twitcher/blob/master/static/resources/logo3.jpg">  
 Tweet guessing game.
 
 Live link! https://twitcher-stacshack.herokuapp.com/
