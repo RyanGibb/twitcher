@@ -36,6 +36,37 @@ wordGetPOSPromise = (...args) => {
   )
 }
 
+async function getUser(handle) {
+  try {
+    let [user_info, _] = await clientGetPromise(user_url + handle)
+    let user = {
+      'follower_count':    user_info[0].followers_count,
+      'tweet_count':       user_info[0].statuses_count,
+      'profile_image_url': user_info[0].profile_image_url
+    }
+    return user
+  } catch(error) {
+    console.log(error)
+    throw 'User doesn\'t exist'
+  }
+}
+
+async function getRecentTweets(handle){
+  let [tweets, _] = await clientGetPromise(tweet_url + handle)
+  var recent_tweets = []
+  for (let i = 0; i < tweets.length; i++) {
+    let tweet = tweets[i]
+    let body = tweet.text
+    let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
+    recent_tweets.push({
+      body,
+      handle,
+      timestamp
+    })
+  }
+  return recent_tweets
+}
+
 async function getBlankedTweets(handle){
   let [tweets, _] = await clientGetPromise(tweet_url + handle)
   let recent_tweets = []
@@ -55,45 +86,6 @@ async function getBlankedTweets(handle){
   return recent_tweets
 }
 
-async function getRecentTweets(handle){
-  let [tweets, _] = await clientGetPromise(tweet_url + handle)
-  var recent_tweets = []
-  for (let i = 0; i < tweets.length; i++) {
-    let tweet = tweets[i]
-    let body = tweet.text
-    let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
-    recent_tweets.push({
-      body,
-      handle,
-      timestamp
-    })
-  }
-  return recent_tweets
-}
-
-async function getUser(handle) {
-  try {
-    var [user_info, _] = await clientGetPromise(user_url + handle)
-  } catch(error) {
-    console.log(error)
-    throw "User doesn't exist"
-  }
-  try {
-    var recent_tweets = await getRecentTweets(handle)
-  } catch(error) {
-    console.log(error)
-    throw "Error getting tweets"
-  }
-  let user = {
-    "handle":           handle,
-    "follower_count":   user_info[0].followers_count,
-    "tweet_count":      user_info[0].statuses_count,
-    "profile_pic_url":  user_info[0].profile_image_url,
-    "recent_tweets":    recent_tweets
-  }
-  return user
-}
-
 // HTTP Server
 
 const express = require('express')
@@ -108,8 +100,8 @@ app.post('/userinfo', async (req, res) => {
   transmissionLog('userinfo -> rx ' + JSON.stringify(req.body))
   let handle = req.body.handle
   if (!handle) {
-    console.log('Missing handle for userinfo request')
-    res.status(500).json({ error: 'Missing handle for userinfo request' })
+    console.log('Missing handle')
+    res.status(500).json({ error: 'Missing handle' })
     return
   }
   try {
@@ -117,16 +109,33 @@ app.post('/userinfo', async (req, res) => {
     res.json(user)
   } catch(error) {
     console.log(error)
-    res.status(500).json({ error })
+    res.status(500).json({ error: 'Error getting user info' })
   }
 })
 
-app.post('blank', async (req, res) => {
+app.post('/recentTweets', async (req, res) => {
+  transmissionLog('userinfo -> rx ' + JSON.stringify(req.body))
+  let handle = req.body.handle
+  if (!handle) {
+    console.log('Missing handle')
+    res.status(500).json({ error: 'Missing handle' })
+    return
+  }
+  try {
+    let recent_tweets = await getRecentTweets(handle)
+    res.json(recent_tweets)
+  } catch(error) {
+    console.log(error)
+    res.status(500).json({ error: 'Error getting recent tweets' })
+  }
+})
+
+app.post('/recentTweetsBlanked', async (req, res) => {
   transmissionLog('blank -> rx ' + JSON.stringify(req.body))
   let handle = req.body.handle
   if(!handle) {
-    console.log('Missing handle for userinfo request')
-    res.status(500).json({ error: 'Missing handle for userinfo request' })
+    console.log('Missing handle')
+    res.status(500).json({ error: 'Missing handle' })
     return
   }
   try {
@@ -134,7 +143,7 @@ app.post('blank', async (req, res) => {
     res.json(recent_tweets)
   } catch(error) {
     console.log(error)
-    res.status(500).json({ error: 'Error getting tweets' })
+    res.status(500).json({ error: 'Error getting blanked recent tweets' })
   }
 })
 
@@ -145,5 +154,5 @@ app.listen(port, () => {
 const maxTransmitionLogLength = 200
 
 function transmissionLog(message){
-  console.log((message.length > maxTransmitionLogLength ? message.slice(0, maxTransmitionLogLength) + "..." : message))
+  console.log((message.length > maxTransmitionLogLength ? message.slice(0, maxTransmitionLogLength) + '...' : message))
 }
