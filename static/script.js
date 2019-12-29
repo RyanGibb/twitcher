@@ -39,17 +39,16 @@ function removeUser(handle){
 }
 
 function refreshTable(){
-    let table = document.getElementById('account_table')
-    let play_button = document.getElementById('play_button')
-    let handles = Object.keys(users)
+    refreshPlayButton()
+    const table = document.getElementById('account_table')
+    const handles = Object.keys(users)
     if (handles.length == 0) {
         table.style.display = 'none'
     } else {
         table.style.display = ''
     }
-    play_button.disabled = handles.length < minUsers
-    let old_tbody = table.getElementsByTagName('tbody')
-    var new_tbody = document.createElement('tbody')
+    const old_tbody = table.getElementsByTagName('tbody')
+    const new_tbody = document.createElement('tbody')
     handles.forEach(handle => {
         const row = new_tbody.insertRow(0)
         const cell0 = row.insertCell(0)
@@ -71,6 +70,20 @@ function refreshTable(){
         cell4.appendChild(button)
     })
     table.replaceChild(new_tbody, old_tbody[0])
+}
+
+function refreshPlayButton() {
+    const play_button = document.getElementById('play_button')
+    let minUsers
+    if (document.getElementById('fs').checked) {
+        minUsers = minGuessWhoUsers
+    } else {
+        minUsers = minCompleteTheTweetUsers
+    }
+    const handles = Object.keys(users)
+    play_button.disabled = handles.length < minUsers
+    play_button.title = 'Please add at least ' + minUsers + ' twitter account' +
+        (minUsers == 1 ? "" : "s") + ' to play'
 }
 
 function play() {
