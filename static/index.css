@@ -1,24 +1,33 @@
 body {
-  background-image: url("resources/background.gif");
+  background-image: url(resources/background.gif);
+  background-repeat: no-repeat;
   background-size: cover;
-  font-family: 'PressStart2PRegular';
-  font-weight: normal;
-  font-style: normal;
+  background-color: #83CB53;
+  background-position: center;
+  text-align: center;
 }
 
-* {
-  font-family: 'PressStart2PRegular';
+h1, h2, h3, p, input, button, table {
+  font-family: PressStart2PRegular;
   font-weight: normal;
-  font-style: normal;
+}
+
+.bottomleft {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+}
+
+.topright {
+  position: fixed;
+  top: 0px;
+  right: 0px;
 }
 
 .button {
-  background-color: #4CAF50;
-  /* Green */
   border: none;
   color: white;
   padding: 16px 32px;
-  text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
@@ -29,26 +38,21 @@ body {
   cursor: pointer;
 }
 
-.button2 {
+.button-default {
   background-color: #008CBA;
-  border: none;
-  color: white;
-  padding: 16px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  -webkit-transition-duration: 0.4s;
-  /* Safari */
-  transition-duration: 0.4s;
-  cursor: pointer;
 }
 
-/* Blue */
-.deleteButton {
+.button-incorrect {
+  background-color: red
+}
+
+.button-correct {
+  background-color: green
+}
+
+
+.delete-button {
   background-color: red;
-  /* Green */
   border: none;
   color: white;
   padding: 2px 32px;
@@ -58,23 +62,24 @@ body {
   font-size: 16px;
 }
 
-.center {
-  margin: auto;
-  width: 50%;
-  padding: 10px;
+.play-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s;
+  /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
 }
 
-* {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
 
-body {
-  color: #7f8c8d;
-  font-size: 14px;
-  background-color: #ededed;
-}
+
+
 
 .bubble {
   width: 100%;
@@ -90,6 +95,10 @@ body {
   border-radius: 8px;
   text-align: left;
   display: inline-block;
+
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 .bubble:hover>.over-bubble {
@@ -105,18 +114,7 @@ body {
   display: inline-block;
 }
 
-.arrow {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 12px;
-  bottom: 25%;
-  height: 0;
-  width: 0;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 20px solid #ecf0f1;
-}
+
 
 .timeline {
   width: 50%;
@@ -221,9 +219,6 @@ body {
   position: relative;
 }
 
-.icon-twitter {
-  font-size: 1.5em;
-}
 
 .new {
   position: absolute;
@@ -346,7 +341,6 @@ h3 {
   font-weight: bold;
   display: inline-block;
   margin-bottom: .2em;
-  color: #95a5a6;
 }
 
 .retweet {
@@ -382,35 +376,6 @@ button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
-}
-
-.drop {
-  animation: drop 1.7s forwards;
-}
-
-@keyframes drop {
-  0% {
-    transform-origin: center;
-    opacity: 1;
-  }
-
-  20% {
-    transform:
-      translate3d(0, 20px, 0) rotate3d(0, 0, 1, -10deg);
-    opacity: 1;
-  }
-
-  40%, 45% {
-    transform:
-      translate3d(0, -120px, 0) rotate3d(0, 0, 1, 10deg);
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-    transform:
-      translate3d(0, 2000px, 0) rotate3d(0, 0, 1, 10deg);
-  }
 }
 
 table {
@@ -473,7 +438,7 @@ table {
   display: flex;
   align-items: center;
   justify-content: center;
-  // min-height: 100vh;
+  min-height: 100vh;
   min-height: 35rem;
   background-image: linear-gradient(to bottom, rgba(255, 168, 76, 0.6) 0%, rgba(255, 123, 13, 0.6) 100%), url('https://images.unsplash.com/photo-1446824505046-e43605ffb17f');
   background-blend-mode: soft-light;
@@ -482,110 +447,9 @@ table {
   padding: 2rem;
 }
 
-.bird {
-  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/174479/bird-cells.svg);
-  background-size: auto 100%;
-  width: 88px;
-  height: 125px;
-  will-change: background-position;
-  animation-name: fly-cycle;
-  animation-timing-function: steps(10);
-  animation-iteration-count: infinite;
-  animation-duration: 1s;
-  animation-delay: -0.5s;
-}
-
-.bird-container {
-  position: absolute;
-  top: 20%;
-  left: -10%;
-  transform: scale(0) translateX(-10vw);
-  will-change: transform;
-  animation-name: fly-right-one;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-duration: 15s;
-}
-
-@keyframes fly-cycle {
-  100% {
-    background-position: -900px 0;
-  }
-}
-
-@keyframes fly-right-one {
-  0% {
-    transform: scale(0.3) translateX(-10vw);
-  }
-
-  10% {
-    transform: translateY(2vh) translateX(10vw) scale(0.4);
-  }
-
-  20% {
-    transform: translateY(0vh) translateX(30vw) scale(0.5);
-  }
-
-  30% {
-    transform: translateY(4vh) translateX(50vw) scale(0.6);
-  }
-
-  40% {
-    transform: translateY(2vh) translateX(70vw) scale(0.6);
-  }
-
-  50% {
-    transform: translateY(0vh) translateX(90vw) scale(0.6);
-  }
-
-  60% {
-    transform: translateY(0vh) translateX(110vw) scale(0.6);
-  }
-
-  100% {
-    transform: translateY(0vh) translateX(110vw) scale(0.6);
-  }
-}
-
-@keyframes fly-right-two {
-  0% {
-    transform: translateY(-2vh) translateX(-10vw) scale(0.5);
-  }
-
-  10% {
-    transform: translateY(0vh) translateX(10vw) scale(0.4);
-  }
-
-  20% {
-    transform: translateY(-4vh) translateX(30vw) scale(0.6);
-  }
-
-  30% {
-    transform: translateY(1vh) translateX(50vw) scale(0.45);
-  }
-
-  40% {
-    transform: translateY(-2.5vh) translateX(70vw) scale(0.5);
-  }
-
-  50% {
-    transform: translateY(0vh) translateX(90vw) scale(0.45);
-  }
-
-  51% {
-    transform: translateY(0vh) translateX(110vw) scale(0.45);
-  }
-
-  100% {
-    transform: translateY(0vh) translateX(110vw) scale(0.45);
-  }
-}
-
 .flipswitch {
   position: relative;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  margin: auto;
 }
 
 .flipswitch input[type=checkbox] {
@@ -662,3 +526,5 @@ table {
 .flipswitch-cb:checked+.flipswitch-label .flipswitch-switch {
   right: 0;
 }
+
+

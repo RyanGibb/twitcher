@@ -20,7 +20,7 @@ const tweet_url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?exclu
 const user_url = 'https://api.twitter.com/1.1/users/lookup.json?screen_name='
 
 clientGetPromise = (...args) => {
-  return new Promise( (resolve, reject) => 
+  return new Promise( (resolve, reject) =>
     client.get(...args,
       (error, data, response) => {
         if (error) reject(error)
@@ -31,7 +31,7 @@ clientGetPromise = (...args) => {
 }
 
 wordGetPOSPromise = (...args) => {
-  return new Promise(resolve => 
+  return new Promise(resolve =>
     wordpos.getPOS(...args, obj => resolve(obj))
   )
 }
@@ -60,7 +60,6 @@ async function getRecentTweets(handle){
     let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
     recent_tweets.push({
       body,
-      handle,
       timestamp
     })
   }
