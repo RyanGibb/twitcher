@@ -1,7 +1,7 @@
 
 async function post(url, data) {
     console.log('-> tx ', data)
-    let res = await fetch(url, {
+    const res = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ async function post(url, data) {
         body: JSON.stringify(data)
     })
     console.log(res)
-    let recieved_data = await res.json()
+    const recieved_data = await res.json()
     console.log('<- rx ', recieved_data)
     if (!res.ok) {
         alert(recieved_data.error)
@@ -18,17 +18,18 @@ async function post(url, data) {
     return recieved_data
 }
 
-let users = {}
-let tweets = {}
-const minUsers = 2
+const users = {}
+const tweets = {}
+const minGuessWhoUsers = 2
+const minCompleteTheTweetUsers = 1
 
 async function addUser() {
-    let handle = document.getElementById('handle_input').value
-    document.getElementById('handle_input').value = ""
+    const handle = document.getElementById('handle_input').value
+    document.getElementById('handle_input').value = ''
     if (handle.charAt(0) === '@') {
       handle = handle.substr(1);
     }
-    let user = await post('/userinfo', {handle})
+    const user = await post('/userinfo', {handle})
     users[handle] = user
     refreshTable()
 }
@@ -39,17 +40,16 @@ function removeUser(handle){
 }
 
 function refreshTable(){
-    let table = document.getElementById('account_table')
-    let play_button = document.getElementById('play_button')
-    let handles = Object.keys(users)
+    refreshPlayButton()
+    const table = document.getElementById('account_table')
+    const handles = Object.keys(users)
     if (handles.length == 0) {
         table.style.display = 'none'
     } else {
         table.style.display = ''
     }
-    play_button.disabled = handles.length < minUsers
-    let old_tbody = table.getElementsByTagName('tbody')
-    var new_tbody = document.createElement('tbody')
+    const old_tbody = table.getElementsByTagName('tbody')
+    const new_tbody = document.createElement('tbody')
     handles.forEach(handle => {
         const row = new_tbody.insertRow(0)
         const cell0 = row.insertCell(0)
@@ -58,7 +58,7 @@ function refreshTable(){
         const cell3 = row.insertCell(3)
         const cell4 = row.insertCell(4)
         const user = users[handle]
-        const profile_image = document.createElement("IMG")
+        const profile_image = document.createElement('IMG')
         profile_image.src = user.profile_image_url
         cell0.appendChild(profile_image)
         cell1.innerHTML = '@' + handle
@@ -73,6 +73,20 @@ function refreshTable(){
     table.replaceChild(new_tbody, old_tbody[0])
 }
 
+function refreshPlayButton() {
+    const play_button = document.getElementById('play_button')
+    let minUsers
+    if (document.getElementById('fs').checked) {
+        minUsers = minGuessWhoUsers
+    } else {
+        minUsers = minCompleteTheTweetUsers
+    }
+    const handles = Object.keys(users)
+    play_button.disabled = handles.length < minUsers
+    play_button.title = 'Please add at least ' + minUsers + ' twitter account' +
+        (minUsers == 1 ? "" : "s") + ' to play'
+}
+
 function play() {
     if (document.getElementById('fs').checked) {
         guessWho()
@@ -82,7 +96,7 @@ function play() {
     }
 }
 
-var displayTweet = () => { throw "displayTweet not set" }
+var displayTweet = () => { throw 'displayTweet not set' }
 
 async function guessWho() {
     if (users.length <= 1) {
@@ -119,9 +133,9 @@ async function completeTheTweet() {
     displayTweet = (tweet_handle, tweet) => {
         correct_handle = tweet_handle
         correct_answer = tweet.word
-        let tweetText = document.getElementById('TweetText')
+        const tweetText = document.getElementById('TweetText')
         tweetText.innerText = tweet.body.replace(correct_answer, '-----')
-        let buttons = document.getElementById('answer_buttons')
+        const buttons = document.getElementById('answer_buttons')
         buttons.innerHTML = ''
         let words
         if(tweet.possibilities.synonyms.length > 3) {
@@ -136,8 +150,8 @@ async function completeTheTweet() {
         }
         words = words.concat(correct_answer)
         words.forEach(word => {
-            var btn = document.createElement('BUTTON')
-            var t = document.createTextNode(word)
+            const btn = document.createElement('BUTTON')
+            const t = document.createTextNode(word)
             btn.appendChild(t)
             document.body.appendChild(btn)
             btn.classList.add('button', 'button-default')
@@ -152,7 +166,7 @@ async function completeTheTweet() {
 }
 
 function chooseTweet(){
-    var handles = Object.keys(users)
+    const handles = Object.keys(users)
     const handle = handles[handles.length * Math.random() << 0];
     if (tweets[handle].length < 1) {
         alert(handle + ' has no more tweets.')
@@ -160,7 +174,7 @@ function chooseTweet(){
         return
     }
     const index = Math.floor(Math.random() * tweets[handle].length)
-    let tweet = tweets[handle][index]
+    const tweet = tweets[handle][index]
     displayTweet(handle, tweet)
     tweets[handle].splice(index, 1)
 }
@@ -171,9 +185,9 @@ function processAnswer(input_answer, btn) {
     if (correct_answer === input_answer) {
         btn.classList.toggle('button-default')
         btn.classList.add('button-correct')
-        let name = document.getElementById('handle')
+        const name = document.getElementById('handle')
         name.innerHTML = '@' + correct_handle
-        let profilePic = document.getElementById('avatar')
+        const profilePic = document.getElementById('avatar')
         profilePic.src = users[correct_handle].profile_image_url
         setTimeout(() => {
             profilePic.src = 'resources/logo1.jpg'
@@ -189,7 +203,7 @@ function processAnswer(input_answer, btn) {
 async function getTweets(url) {
     let ok = true
     for (const handle in users) {
-        let recent_tweets = await post(url, {handle})
+        const recent_tweets = await post(url, {handle})
         if (recent_tweets < 0) {
             alert(handle + ' has no tweets')
             removeUser(handle)
@@ -202,19 +216,20 @@ async function getTweets(url) {
 }
 
 function setup() {
-    var audio = document.getElementById("audio")
+    refreshPlayButton()
+    const audio = document.getElementById('audio')
     changeVolume()
     audio.play()
 }
 
-var volume = 0
+var volume = 3
 var maxVolume = 4
 function changeVolume() {
     volume = (volume + 1) % maxVolume
     fractionalVolume = 1 - log(maxVolume - volume, maxVolume)
-    var audio = document.getElementById("audio")
+    const audio = document.getElementById('audio')
     audio.volume = fractionalVolume
-    var audio_icon = document.getElementById("audio_icon")
+    const audio_icon = document.getElementById('audio_icon')
     audio_icon.src = 'resources/volume' + volume + '.png'
 }
 

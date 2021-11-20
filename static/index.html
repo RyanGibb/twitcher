@@ -17,7 +17,7 @@
   <div id="first_page">
     <p> Game Mode: </p>
     <div class="flipswitch" style="width: 30em;">
-      <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked>
+      <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="fs" checked onclick="refreshPlayButton()">
       <label class="flipswitch-label" for="fs">
         <div class="flipswitch-inner"></div>
       </label>
@@ -27,8 +27,7 @@
       <input type="text" id="handle_input" placeholder="@..." style="width: 20em">
       <input type="submit" value="Submit" onclick="addUser()">
     </div>
-    <button disabled class="play-button" onclick="play()" id="play_button"
-      style="width: 10em" title="Please add at least 2 twitter accounts to play">
+    <button disabled class="play-button" onclick="play()" id="play_button" style="width: 10em">
       Play
     </button>
     <h2> Twitter Accounts</h2>
