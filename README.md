@@ -3,9 +3,7 @@ Tweet guessing game.
 
 Devpost: https://devpost.com/software/twitcher
 
-Live link: http://twitcher.ryan.gibb.xyz
-
-(Or https://twitcher-stacshack.herokuapp.com/ for `https` access. Heroku's free tier doesn't support SSL/TLS certs.)
+Live link: https://twitcher.gibb.xyz (or https://twitcher-stacshack.herokuapp.com/).
 
 ### Modes:
   1. Guess who?
