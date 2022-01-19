@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "wrangler": "^0.0.0-fsw-beta.5"
+  }
+}

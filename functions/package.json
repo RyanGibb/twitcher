@@ -1,0 +1,33 @@
+{
+  "name": "twitcher",
+  "version": "1.0.0",
+  "description": "Twitter Guessing Game",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanGibb/twitcher.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RyanGibb/twitcher/issues"
+  },
+  "homepage": "https://github.com/RyanGibb/twitcher#readme",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "request": "^2.88.0",
+    "thesaurus-com": "^1.2.1",
+    "twitter": "^1.7.1",
+    "wordpos": "^1.2.0",
+    "ws": "^7.4.6"
+  },
+  "engines": {
+    "node": "v10.15.0"
+  }
+}
