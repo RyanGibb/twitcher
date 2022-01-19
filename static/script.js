@@ -137,19 +137,12 @@ async function completeTheTweet() {
         tweetText.innerText = tweet.body.replace(correct_answer, '-----')
         const buttons = document.getElementById('answer_buttons')
         buttons.innerHTML = ''
-        let words
-        if(tweet.possibilities.synonyms.length > 3) {
-            words = tweet.possibilities.synonyms.slice(0, 3)
-        }else{
-            words = tweet.possibilities.synonyms.slice(0, tweet.possibilities.synonyms.length)
-        }
-        if(tweet.possibilities.antonyms.length > 3) {
-            words = words.concat(tweet.possibilities.antonyms.slice(0, 3))
-        }else {
-            words = words.concat(tweet.possibilities.antonyms.slice(0, tweet.possibilities.antonyms.length))
-        }
-        words = words.concat(correct_answer)
-        words.forEach(word => {
+        let words = tweet.possibilities
+		// this is not efficient :(
+		words = words.sort(() => 0.5 - Math.random()).splice(0, 5)
+		words = words.concat(correct_answer)
+		words = words.sort(() => 0.5 - Math.random())
+		words.forEach(word => {
             const btn = document.createElement('BUTTON')
             const t = document.createTextNode(word)
             btn.appendChild(t)

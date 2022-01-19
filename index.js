@@ -4,7 +4,7 @@ require("dotenv").config()
 // Twitter API
 
 const Twitter = require('twitter')
-const tcom = require('thesaurus-com')
+const thesaurus = require('thesaurus')
 const WordPOS = require('wordpos')
 const wordpos = new WordPOS()
 
@@ -15,7 +15,7 @@ const client = new Twitter({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
 
-const tweet_url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&screen_name='
+const tweet_url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?exclude_replies=true&include_rts=false&tweet_mode=extended&screen_name='
 
 const user_url = 'https://api.twitter.com/1.1/users/lookup.json?screen_name='
 
@@ -53,15 +53,18 @@ async function getUser(handle) {
 
 async function getRecentTweets(handle){
   let [tweets, _] = await clientGetPromise(tweet_url + handle)
+  console.log(tweets)
   var recent_tweets = []
   for (let i = 0; i < tweets.length; i++) {
     let tweet = tweets[i]
-    let body = tweet.text
+    let body = tweet.full_text.replace(/(?:https?):\/\/[\n\S]+/g, '').trim()
     let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
-    recent_tweets.push({
-      body,
-      timestamp
-    })
+	if (body != "") {
+      recent_tweets.push({
+        body,
+        timestamp
+      })
+	}
   }
   return recent_tweets
 }
@@ -71,15 +74,18 @@ async function getBlankedTweets(handle){
   let recent_tweets = []
   for (let i = 0; i < tweets.length; i+=1) {
     let tweet = tweets[i]
-    let body = tweet.text
+    let body = tweet.full_text.replace(/(?:https?):\/\/[\n\S]+/g, '').trim()
     let obj = await wordGetPOSPromise(body)
-    let wordArray = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs)
-    if (wordArray.length > 0) {
-      var word = wordArray[Math.floor(Math.random()*wordArray.length)]
-      let possibilities = tcom.search(word)
-      let body = tweet.text
-      let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
-      recent_tweets.push({body, timestamp, word, possibilities})
+    let words = obj.nouns.concat(obj.verbs, obj.adjectives, obj.adverbs)
+	for (let j = 0; j < words.length; j+=1) {
+	  let word = words[j]
+	  let possibilities = thesaurus.find(word)
+	  if (possibilities.length > 1) {
+		let timestamp = (new Date(tweet.created_at)).toLocaleDateString()
+        recent_tweets.push({body, timestamp, word, possibilities})
+		// only one entry per tweek
+		break;
+	  }
     }
   }
   return recent_tweets

@@ -22,7 +22,7 @@
     "express": "^4.16.4",
     "http": "0.0.0",
     "request": "^2.88.0",
-    "thesaurus-com": "^1.2.1",
+    "thesaurus": "^0.0.1",
     "twitter": "^1.7.1",
     "wordpos": "^1.2.0",
     "ws": "^7.4.6"
