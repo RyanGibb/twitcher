@@ -58,7 +58,7 @@ async function getRecentTweets(handle){
   for (let i = 0; i < tweets.length; i++) {
     let tweet = tweets[i]
     let body = tweet.full_text.replace(/(?:https?):\/\/[\n\S]+/g, '').trim()
-    let timestamp = (new Date(tweet.created_at)).tolocalestring("en-GB")
+    let timestamp = (new Date(tweet.created_at)).toLocaleString("en-GB")
 	if (body != "") {
       recent_tweets.push({
         body,
@@ -81,7 +81,7 @@ async function getBlankedTweets(handle){
 	  let word = words[j]
 	  let possibilities = thesaurus.find(word)
 	  if (possibilities.length > 1) {
-		let timestamp = (new Date(tweet.created_at)).tolocalestring("en-GB")
+		let timestamp = (new Date(tweet.created_at)).toLocaleString("en-GB")
         recent_tweets.push({body, timestamp, word, possibilities})
 		// only one entry per tweek
 		break;
