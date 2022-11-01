@@ -3,8 +3,9 @@ Tweet guessing game.
 
 Devpost: https://devpost.com/software/twitcher
 
-Live link: https://twitcher.gibb.xyz (or https://twitcher-stacshack.herokuapp.com/).
+Live link: https://twitcher.gibbr.org/.
 
 ### Modes:
   1. Guess who?
   2. Fill in the blanks!!!
+
