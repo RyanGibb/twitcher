@@ -3,7 +3,7 @@ Tweet guessing game.
 
 Devpost: https://devpost.com/software/twitcher
 
-Live link: https://twitcher.gibbr.org/.
+Live link: https://twitcher.freumh.org/.
 
 ### Modes:
   1. Guess who?
