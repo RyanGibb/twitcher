@@ -24,8 +24,7 @@
     "request": "^2.88.0",
     "thesaurus": "^0.0.1",
     "twitter": "^1.7.1",
-    "wordpos": "^1.2.0",
-    "ws": "^7.4.6"
+    "wordpos": "^1.2.0"
   },
   "engines": {
     "node": "v10.15.0"
