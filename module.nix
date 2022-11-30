@@ -37,6 +37,10 @@ let cfg = config.services.twitcher; in
         type = lib.types.str;
         default = "192.168.100.10";
       };
+      containerLocalAddress = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.100.10";
+      };
     };
   };
 
@@ -53,13 +57,16 @@ let cfg = config.services.twitcher; in
       };
     };
 
+    networking.nat.internalInterfaces = [ "ve-twitcher" ];
+
     containers.twitcher = {
       autoStart = true;                
       privateNetwork = true;           
       hostAddress = cfg.containerHostAddress;
+      localAddress = cfg.containerLocalAddress;
       bindMounts."secrets" = {
-        hostPath = "/etc/nixos/secrets";
-        mountPoint = "/mnt/secrets";
+        hostPath = cfg.dotenvFile;
+        mountPoint = cfg.dotenvFile;
         isReadOnly = true;
       };
       config = {
@@ -77,6 +84,10 @@ let cfg = config.services.twitcher; in
             Restart = "always";
             RestartSec = "10s";
           };
+        };
+        networking.firewall = {
+          enable = true;
+          allowedTCPPorts = [ cfg.port ];
         };
         system.stateVersion = "22.05";
       };
