@@ -33,14 +33,6 @@ let cfg = config.services.twitcher; in
           Ignored if null
         '';
       };
-      containerHostAddress = lib.mkOption {
-        type = lib.types.str;
-        default = "192.168.100.10";
-      };
-      containerLocalAddress = lib.mkOption {
-        type = lib.types.str;
-        default = "192.168.100.10";
-      };
     };
   };
 
@@ -52,44 +44,25 @@ let cfg = config.services.twitcher; in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://${cfg.containerHostAddress}:${builtins.toString cfg.port}";
+          proxyPass = "http://127.0.0.1:${builtins.toString cfg.port}";
         };
       };
     };
 
-    networking.nat.internalInterfaces = [ "ve-twitcher" ];
-
-    containers.twitcher = {
-      autoStart = true;                
-      privateNetwork = true;           
-      hostAddress = cfg.containerHostAddress;
-      localAddress = cfg.containerLocalAddress;
-      bindMounts."secrets" = {
-        hostPath = cfg.dotenvFile;
-        mountPoint = cfg.dotenvFile;
-        isReadOnly = true;
-      };
-      config = {
-        nixpkgs.pkgs = pkgs;
-        systemd.services.twitcher = {
-          enable = true;
-          description = "twitcher";
-          after = [ "network.target" ];
-          wantedBy = [ "multi-user.target" ];
-          environment.PORT = "${builtins.toString cfg.port}";
-          serviceConfig = {
-            ExecStart = "${pkgs.nodejs}/bin/node .";
-            EnvironmentFile = cfg.dotenvFile;
-            WorkingDirectory = "${pkgs.twitcher}/lib/node_modules/twitcher/";
-            Restart = "always";
-            RestartSec = "10s";
-          };
-        };
-        networking.firewall = {
-          enable = true;
-          allowedTCPPorts = [ cfg.port ];
-        };
-        system.stateVersion = "22.05";
+    systemd.services.twitcher = {
+      enable = true;
+      description = "twitcher";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
+      environment.PORT = "${builtins.toString cfg.port}";
+      serviceConfig = {
+        ExecStart = "${pkgs.nodejs}/bin/node .";
+        EnvironmentFile = cfg.dotenvFile;
+        WorkingDirectory = "${pkgs.twitcher}/lib/node_modules/twitcher/";
+        Restart = "always";
+        RestartSec = "10s";
+        User = cfg.user;
+        Group = cfg.group;
       };
     };
 
@@ -106,5 +79,16 @@ let cfg = config.services.twitcher; in
         data = cfg.cname;
       }
     ];
+
+    users.users = {
+      "${cfg.user}" = {
+        description = "Twitcher Service";
+        useDefaultShell = true;
+        group = cfg.group;
+        isSystemUser = true;
+      };
+    };
+
+    users.groups."${cfg.group}" = {};
   };
 }
