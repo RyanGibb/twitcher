@@ -116,7 +116,7 @@ let cfg = config.services.twitcher; in
     };
 
     # requires dns module
-    hosting.dns.records = [
+    custom.hosting.dns.records = [
       {
         name = "${cfg.domain}.";
         type = "CNAME";
