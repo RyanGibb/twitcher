@@ -33,6 +33,10 @@ let cfg = config.services.twitcher; in
           Ignored if null
         '';
       };
+      containerHostAddress = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.100.10";
+      };
     };
   };
 
@@ -44,25 +48,31 @@ let cfg = config.services.twitcher; in
         forceSSL = true;
         enableACME = true;
         locations."/" = {
-          proxyPass = "http://127.0.0.1:${builtins.toString cfg.port}";
+          proxyPass = "http://${cfg.containerHostAddress}:${builtins.toString cfg.port}";
         };
       };
     };
 
-    systemd.services.twitcher = {
-      enable = true;
-      description = "twitcher";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      environment.PORT = "${builtins.toString cfg.port}";
-      serviceConfig = {
-        ExecStart = "${pkgs.nodejs}/bin/node .";
-        EnvironmentFile = cfg.dotenvFile;
-        WorkingDirectory = "${pkgs.twitcher}/lib/node_modules/twitcher/";
-        Restart = "always";
-        RestartSec = "10s";
-        User = cfg.user;
-        Group = cfg.group;
+    containers.twitcher = {
+      autoStart = true;                
+      privateNetwork = true;           
+      hostAddress = cfg.containerHostAddress;
+
+      config = { pkgs, ... }: {
+        systemd.services.twitcher = {
+          enable = true;
+          description = "twitcher";
+          after = [ "network.target" ];
+          wantedBy = [ "multi-user.target" ];
+          environment.PORT = "${builtins.toString cfg.port}";
+          serviceConfig = {
+            ExecStart = "${pkgs.nodejs}/bin/node .";
+            EnvironmentFile = cfg.dotenvFile;
+            WorkingDirectory = "${pkgs.twitcher}/lib/node_modules/twitcher/";
+            Restart = "always";
+            RestartSec = "10s";
+          };
+        };
       };
     };
 
@@ -79,16 +89,5 @@ let cfg = config.services.twitcher; in
         data = cfg.cname;
       }
     ];
-
-    users.users = {
-      "${cfg.user}" = {
-        description = "Twitcher Service";
-        useDefaultShell = true;
-        group = cfg.group;
-        isSystemUser = true;
-      };
-    };
-
-    users.groups."${cfg.group}" = {};
   };
 }
