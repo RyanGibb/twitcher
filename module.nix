@@ -57,7 +57,11 @@ let cfg = config.services.twitcher; in
       autoStart = true;                
       privateNetwork = true;           
       hostAddress = cfg.containerHostAddress;
-
+      bindMounts."secrets" = {
+        hostPath = "/etc/nixos/secrets";
+        mountPoint = "/mnt/secrets";
+        isReadOnly = true;
+      };
       config = {
         nixpkgs.pkgs = pkgs;
         systemd.services.twitcher = {
