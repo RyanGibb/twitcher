@@ -68,14 +68,14 @@ let cfg = config.services.twitcher; in
         User = cfg.user;
         Group = cfg.group;
         # Runtime directory and mode
-        RuntimeDirectory = "twitcher";
-        RuntimeDirectoryMode = "0750";
-        # Cache directory and mode
-        CacheDirectory = "twitcher";
-        CacheDirectoryMode = "0750";
-        # Logs directory and mode
-        LogsDirectory = "twitcher";
-        LogsDirectoryMode = "0750";
+        #RuntimeDirectory = "twitcher";
+        #RuntimeDirectoryMode = "0750";
+        ## Cache directory and mode
+        #CacheDirectory = "twitcher";
+        #CacheDirectoryMode = "0750";
+        ## Logs directory and mode
+        #LogsDirectory = "twitcher";
+        #LogsDirectoryMode = "0750";
         # Proc filesystem
         #ProcSubset = "pid";
         #ProtectProc = "invisible";
@@ -124,5 +124,16 @@ let cfg = config.services.twitcher; in
         data = cfg.cname;
       }
     ];
+
+    users.users = {
+      "${cfg.user}" = {
+        description = "Twitcher Service";
+        useDefaultShell = true;
+        group = cfg.group;
+        isSystemUser = true;
+      };
+    };
+
+    users.groups."${cfg.group}" = {};
   };
 }
