@@ -58,7 +58,8 @@ let cfg = config.services.twitcher; in
       privateNetwork = true;           
       hostAddress = cfg.containerHostAddress;
 
-      config = { pkgs, ... }: {
+      config = {
+        nixpkgs.pkgs = pkgs;
         systemd.services.twitcher = {
           enable = true;
           description = "twitcher";
@@ -73,6 +74,7 @@ let cfg = config.services.twitcher; in
             RestartSec = "10s";
           };
         };
+        system.stateVersion = "22.05";
       };
     };
 
