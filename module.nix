@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, options, ... }:
 
 let cfg = config.services.twitcher; in
 {
@@ -115,7 +115,8 @@ let cfg = config.services.twitcher; in
       };
     };
 
-    dns.records = lib.mkIf (config ? dns) [
+    # requires dns module
+    dns.records = [
       {
         name = "${cfg.domain}.";
         type = "CNAME";
