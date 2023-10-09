@@ -67,7 +67,7 @@ let cfg = config.services.twitcher; in
     };
 
     # requires dns module
-    dns.zones.${config.networking.domain}.records = [
+    eilean.services.dns.zones.${config.networking.domain}.records = [
       {
         name = "${cfg.domain}.";
         type = "CNAME";
